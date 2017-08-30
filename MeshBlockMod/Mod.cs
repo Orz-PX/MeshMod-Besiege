@@ -1,19 +1,20 @@
 ﻿using System;
 using spaar.ModLoader;
 using UnityEngine;
+using Blocks;
 
-namespace MeshBlockMod
+namespace XultimateX.MeshBlockMod
 {
 
     // If you need documentation about any of these values or the mod loader
     // in general, take a look at https://spaar.github.io/besiege-modloader.
 
-    public class YourMod : Mod
+    public partial class MeshBlockMod : BlockMod
     {
-        public override string Name { get; } = "<placeholder>";
-        public override string DisplayName { get; } = "<placeholder>";
-        public override string Author { get; } = "<placeholder>";
-        public override Version Version { get; } = new Version(1, 0, 0);
+        public override string Name { get; } = "MeshBlockMod";
+        public override string DisplayName { get; } = "Mesh Block Mod";
+        public override string Author { get; } = "XultimateX";
+        public override Version Version => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
 
         // You don't need to override this, if you leavie it out it will default
         // to an empty string.
@@ -35,12 +36,20 @@ namespace MeshBlockMod
         public override void OnLoad()
         {
             // Your initialization code here
+
+            new GameObject().AddComponent<Updater>();
+
+            LoadBlock(MeshBlock);
+            
         }
 
         public override void OnUnload()
         {
             // Your code here
             // e.g. save configuration, destroy your objects if CanBeUnloaded is true etc
+
+            
         }
+      
     }
 }
