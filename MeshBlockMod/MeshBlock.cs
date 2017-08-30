@@ -177,14 +177,13 @@ namespace XultimateX.MeshBlockMod
         {
             if (Directory.Exists(path))
             {
-                DirectoryInfo direction = new DirectoryInfo(path);
-                FileInfo[] files = direction.GetFiles("*", SearchOption.AllDirectories);
+                FileInfo[] files = new DirectoryInfo(path).GetFiles("*", SearchOption.AllDirectories);
 
                 Debug.Log(files.Length);
 
                 for (int i = 0; i < files.Length; i++)
                 {
-                    if (files[i].Name.EndsWith(".meta"))
+                    if (!files[i].Name.EndsWith(".obj"))
                     {
                         continue;
                     }
