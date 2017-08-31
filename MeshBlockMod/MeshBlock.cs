@@ -139,6 +139,8 @@ namespace XultimateX.MeshBlockMod
 
         List<Texture> Textures = new List<Texture>();
 
+        bool Rotation = false;
+
         string PathMesh = Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/Mesh";
         string PathTexture = Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/Texture";
 
@@ -172,7 +174,7 @@ namespace XultimateX.MeshBlockMod
             MassSlider.ValueChanged += (float value) => { Mass = value;};
 
 
-            GetMeshs(PathMesh);
+            //GetMeshs(PathMesh);
 
             //foreach (Mesh m in Meshs)
             //{
@@ -183,6 +185,7 @@ namespace XultimateX.MeshBlockMod
 
         void OpenKeymapper()
         {
+            Rotation = true;
             RotationXSlider.Value = RotationX = MR.transform.eulerAngles.x;
             RotationYSlider.Value = RotationY = MR.transform.eulerAngles.y;
             RotationZSlider.Value = RotationZ = MR.transform.eulerAngles.z;
@@ -190,7 +193,15 @@ namespace XultimateX.MeshBlockMod
 
         void ChangedRotation()
         {
-            MR.transform.rotation = Quaternion.Euler(new Vector3(RotationX,RotationY,RotationZ));
+            if (!Rotation)
+            {
+                MR.transform.rotation = Quaternion.Euler(new Vector3(RotationX, RotationY, RotationZ));
+            }
+            else
+            {
+                Rotation = false;
+            }
+            
         }
 
         void ChangedHardness()
