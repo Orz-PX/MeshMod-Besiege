@@ -2,6 +2,7 @@
 using spaar.ModLoader;
 using UnityEngine;
 using Blocks;
+using System.Collections.Generic;
 
 namespace XultimateX.MeshBlockMod
 {
@@ -32,6 +33,13 @@ namespace XultimateX.MeshBlockMod
         // to false.
         public override bool Preload { get; } = false;
 
+        public static string PathMesh = Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/Mesh";
+        public static string PathTexture = Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/Texture";
+
+        public static List<NeededResource> LNR;
+
+        //public static List<string> ObjName = new List<string>();
+        //public static List<string> TextureName = new List<string>();
 
         public override void OnLoad()
         {
@@ -39,8 +47,10 @@ namespace XultimateX.MeshBlockMod
 
             new GameObject().AddComponent<Updater>();
 
+            //LNR = NR(Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/");
+
             LoadBlock(MeshBlock);
-            
+
         }
 
         public override void OnUnload()

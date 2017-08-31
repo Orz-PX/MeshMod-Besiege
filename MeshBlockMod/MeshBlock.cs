@@ -43,16 +43,18 @@ namespace XultimateX.MeshBlockMod
            .CompoundCollider(new System.Collections.Generic.List<ColliderComposite>
                                 {
                                     //方块碰撞器
-                                    ColliderComposite.Box(Vector3.one, new Vector3(0,0,0.5f), Vector3.zero)
+                                    ColliderComposite.Mesh("/MeshBlockMod/Cube.obj",Vector3.one*0.3f, new Vector3(0,0,0.5f), Vector3.zero)
                                 }
                              )
 
            //模块 载入资源
-           .NeededResources(new System.Collections.Generic.List<NeededResource>
+           .NeededResources(
+            LNR = new System.Collections.Generic.List<NeededResource>
                                {
-                                    //new NeededResource(ResourceType.Texture,"/MordenFirearmKitMod/RocketFire.png"),
-                                    //new NeededResource(ResourceType.Texture,"/MordenFirearmKitMod/RocketSmoke.png")
-                                })
+            //                        //new NeededResource(ResourceType.Texture,"/MordenFirearmKitMod/RocketFire.png"),
+            //                        //new NeededResource(ResourceType.Texture,"/MordenFirearmKitMod/RocketSmoke.png")
+                                }
+            )
 
            //模块 连接点
            .AddingPoints(new System.Collections.Generic.List<AddingPoint>
@@ -76,35 +78,12 @@ namespace XultimateX.MeshBlockMod
 
         #endregion;
 
-        List<NeededResource> NR(string path)
-        {
-            List<NeededResource> NRL = new List<NeededResource>();
 
-            if (Directory.Exists(path))
-            {
-                FileInfo[] files = new DirectoryInfo(path).GetFiles("*", SearchOption.AllDirectories);
 
-                Debug.Log(files.Length);
+       
 
-                for (int i = 0; i < files.Length; i++)
-                {
-                    if (files[i].Name.EndsWith(".obj"))
-                    {
-                        NRL.Add(new NeededResource(ResourceType.Mesh, "/MeshBlockMod/Mesh/" + files[i].Name));
-                        Debug.Log("Name:" + files[i].Name);
-                        Debug.Log("FullName:" + files[i].FullName);
-                        Debug.Log("DirectoryName:" + files[i].DirectoryName);
-                    }
-                    
 
-                }
-            }
-            else
-            {
-                Directory.CreateDirectory(path);
-            }
-            return NRL;
-        }
+
         
     }
 
@@ -112,6 +91,7 @@ namespace XultimateX.MeshBlockMod
     public class MeshBlockScript : BlockScript
     {
 
+        MToggle RotationToggle;
         MSlider RotationXSlider;
         MSlider RotationYSlider;
         MSlider RotationZSlider;
@@ -127,39 +107,46 @@ namespace XultimateX.MeshBlockMod
         public bool MassFormSize = false;
         public float Mass = 0.5f;
 
-        //MVisual SkinsVisual;
+        MMenu MeshMenu;
+        MMenu TextureMenu;
+
+        MeshFilter MF;
 
         MeshRenderer MR;
+
+        //Collider 
 
         ConfigurableJoint CJ;
 
         Rigidbody RB;
 
-        List<Mesh> Meshs = new List<Mesh>();
+        MeshBlockMod.MeshAndTexture MT;
 
-        List<Texture> Textures = new List<Texture>();
+        bool OpenedKeymapper = false;
 
-        bool Rotation = false;
-
-        string PathMesh = Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/Mesh";
-        string PathTexture = Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/Texture";
+        bool RefreshMeshEnable = false;
 
         public override void SafeAwake()
         {
             base.SafeAwake();
-
+#if DEBUG
+            Debug.Log("SafeAwake");
+#endif
+          
             Game.OnKeymapperOpen += OpenKeymapper;
 
+            MF = GetComponentsInChildren<MeshFilter>().ToList().Find(match => match.name == "Vis");
             MR = GetComponentsInChildren<MeshRenderer>().ToList().Find(match => match.name == "Vis");
+            MT = new MeshBlockMod.MeshAndTexture(MeshBlockMod.ResourcePath);
             CJ = GetComponent<ConfigurableJoint>();
             RB = GetComponent<Rigidbody>();
 
-            Meshs.Add(GetComponentsInChildren<MeshFilter>().ToList().Find(match => match.name == "Vis").mesh);
-
-
+            RotationToggle = AddToggle("模型旋转", "Rotation", false);
             RotationXSlider = AddSlider("旋转X轴", "RotationX", RotationX, 0f, 360f);
             RotationYSlider = AddSlider("旋转Y轴", "RotationY", RotationY, 0f, 360f);
             RotationZSlider = AddSlider("旋转Z轴", "RotationZ", RotationZ, 0f, 360f);
+            DisplayRotation(false);
+            RotationToggle.Toggled += (bool value) => { DisplayRotation(value); };
             RotationXSlider.ValueChanged += (float value) => { RotationX = value; ChangedRotation(); };
             RotationYSlider.ValueChanged += (float value) => { RotationY = value; ChangedRotation(); };
             RotationZSlider.ValueChanged += (float value) => { RotationZ = value; ChangedRotation(); };
@@ -173,33 +160,36 @@ namespace XultimateX.MeshBlockMod
             MassSlider = AddSlider("质量", "Mass", Mass, 0.2f, 2f);
             MassSlider.ValueChanged += (float value) => { Mass = value;};
 
+            MeshMenu = AddMenu("Mesh", 0, new List<string>() { "1","2","3","4"});
+            MeshMenu.ValueChanged += (int value) => { MF.mesh = MeshBlockMod.LNR[1].mesh; };
+            //TextureMenu = AddMenu("Texture", 0, MT.TextureNames);
+            //TextureMenu.ValueChanged += (int value) => {MR.sharedMaterial = new Material(Shader.Find("Transparent/Diffuse")); MR.sharedMaterial.mainTexture = MT.Textures[value]; };
 
-            //GetMeshs(PathMesh);
-
-            //foreach (Mesh m in Meshs)
-            //{
-            //    Debug.Log(m.name + " " + Meshs.ToArray().Length + " MeshsDebug");
-            //}
 
         }
 
-        void OpenKeymapper()
+        public void OpenKeymapper()
         {
-            Rotation = true;
-            RotationXSlider.Value = RotationX = MR.transform.eulerAngles.x;
-            RotationYSlider.Value = RotationY = MR.transform.eulerAngles.y;
-            RotationZSlider.Value = RotationZ = MR.transform.eulerAngles.z;
+            //OpenedKeymapper = true;
+            //RotationXSlider.Value = RotationX = MR.transform.eulerAngles.x;
+            //RotationYSlider.Value = RotationY = MR.transform.eulerAngles.y;
+            //RotationZSlider.Value = RotationZ = MR.transform.eulerAngles.z;
+        }
+
+        void DisplayRotation(bool value)
+        {
+            RotationXSlider.DisplayInMapper = RotationYSlider.DisplayInMapper = RotationZSlider.DisplayInMapper = value;
         }
 
         void ChangedRotation()
         {
-            if (!Rotation)
+            if (!OpenedKeymapper)
             {
                 MR.transform.rotation = Quaternion.Euler(new Vector3(RotationX, RotationY, RotationZ));
             }
             else
             {
-                Rotation = false;
+                OpenedKeymapper = false;
             }
             
         }
@@ -233,32 +223,13 @@ namespace XultimateX.MeshBlockMod
             RB.mass = Mass * (MassFormSize ? transform.localScale.x * transform.localScale.y * transform.localScale.z : 1f);
         }
 
-        void GetMeshs(string path)
+        void RefreshMesh()
         {
-            if (Directory.Exists(path))
+            if (RefreshMeshEnable)
             {
-                FileInfo[] files = new DirectoryInfo(path).GetFiles("*", SearchOption.AllDirectories);
-
-                Debug.Log(files.Length);
-
-                for (int i = 0; i < files.Length; i++)
-                {
-                    if (!files[i].Name.EndsWith(".obj"))
-                    {
-                        continue;
-                    }
-                    Meshs.Add(resources["/MeshBlockMod/Mesh/" + files[i].Name].mesh);
-                    Debug.Log("Name:" + files[i].Name);
-                    Debug.Log( "FullName:" + files[i].FullName );  
-                    Debug.Log( "DirectoryName:" + files[i].DirectoryName );
-                    
-                }
-            }
-            else
-            {
-                Directory.CreateDirectory(path);
-            }
-            
+                RefreshMeshEnable = true;
+                MF.mesh = MT.Meshs[MeshMenu.Value];
+            } 
         }
 
         protected virtual System.Collections.IEnumerator UpdateMapper()
@@ -282,12 +253,15 @@ namespace XultimateX.MeshBlockMod
         {
             base.OnLoad(stream);
             LoadMapperValues(stream);
+
+            if (stream.HasKey("bmt-" + MeshMenu.Key)) { MeshMenu.Value = stream.ReadInt("bmt-" + MeshMenu.Key); RefreshMeshEnable = true; }
         }
 
         protected override void BuildingUpdate()
         {
             base.BuildingUpdate();
             ChangedMass();
+            RefreshMesh();
         }
 
         protected override void OnSimulateStart()
@@ -302,4 +276,5 @@ namespace XultimateX.MeshBlockMod
 
 
     }
+
 }
