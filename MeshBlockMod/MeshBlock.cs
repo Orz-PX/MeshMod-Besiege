@@ -76,6 +76,35 @@ namespace XultimateX.MeshBlockMod
 
         #endregion;
 
+        List<NeededResource> NR(string path)
+        {
+            List<NeededResource> NRL = new List<NeededResource>();
+
+            if (Directory.Exists(path))
+            {
+                FileInfo[] files = new DirectoryInfo(path).GetFiles("*", SearchOption.AllDirectories);
+
+                Debug.Log(files.Length);
+
+                for (int i = 0; i < files.Length; i++)
+                {
+                    if (files[i].Name.EndsWith(".obj"))
+                    {
+                        NRL.Add(new NeededResource(ResourceType.Mesh, "/MeshBlockMod/Mesh/" + files[i].Name));
+                        Debug.Log("Name:" + files[i].Name);
+                        Debug.Log("FullName:" + files[i].FullName);
+                        Debug.Log("DirectoryName:" + files[i].DirectoryName);
+                    }
+                    
+
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(path);
+            }
+            return NRL;
+        }
         
     }
 
@@ -98,14 +127,17 @@ namespace XultimateX.MeshBlockMod
         public bool MassFormSize = false;
         public float Mass = 0.5f;
 
-        MVisual SkinsVisual;
-
+        //MVisual SkinsVisual;
 
         MeshRenderer MR;
 
         ConfigurableJoint CJ;
 
         Rigidbody RB;
+
+        List<Mesh> Meshs = new List<Mesh>();
+
+        List<Texture> Textures = new List<Texture>();
 
         string PathMesh = Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/Mesh";
         string PathTexture = Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/Texture";
@@ -114,13 +146,18 @@ namespace XultimateX.MeshBlockMod
         {
             base.SafeAwake();
 
+            Game.OnKeymapperOpen += OpenKeymapper;
+
             MR = GetComponentsInChildren<MeshRenderer>().ToList().Find(match => match.name == "Vis");
             CJ = GetComponent<ConfigurableJoint>();
             RB = GetComponent<Rigidbody>();
 
-            RotationXSlider = AddSlider("旋转X轴", "RotationX", RotationX, -180f, 180f);
-            RotationYSlider = AddSlider("旋转Y轴", "RotationY", RotationY, -180f, 180f);
-            RotationZSlider = AddSlider("旋转Z轴", "RotationZ", RotationZ, -180f, 180f);
+            Meshs.Add(GetComponentsInChildren<MeshFilter>().ToList().Find(match => match.name == "Vis").mesh);
+
+
+            RotationXSlider = AddSlider("旋转X轴", "RotationX", RotationX, 0f, 360f);
+            RotationYSlider = AddSlider("旋转Y轴", "RotationY", RotationY, 0f, 360f);
+            RotationZSlider = AddSlider("旋转Z轴", "RotationZ", RotationZ, 0f, 360f);
             RotationXSlider.ValueChanged += (float value) => { RotationX = value; ChangedRotation(); };
             RotationYSlider.ValueChanged += (float value) => { RotationY = value; ChangedRotation(); };
             RotationZSlider.ValueChanged += (float value) => { RotationZ = value; ChangedRotation(); };
@@ -134,9 +171,21 @@ namespace XultimateX.MeshBlockMod
             MassSlider = AddSlider("质量", "Mass", Mass, 0.2f, 2f);
             MassSlider.ValueChanged += (float value) => { Mass = value;};
 
-            //SkinsVisual = new MVisual(GetComponent<BlockVisualControllerExtended>(), 0, new List<BlockSkinLoader.SkinPack.Skin>() {new BlockSkinLoader.SkinPack.Skin() });
+
             GetMeshs(PathMesh);
 
+            //foreach (Mesh m in Meshs)
+            //{
+            //    Debug.Log(m.name + " " + Meshs.ToArray().Length + " MeshsDebug");
+            //}
+
+        }
+
+        void OpenKeymapper()
+        {
+            RotationXSlider.Value = RotationX = MR.transform.eulerAngles.x;
+            RotationYSlider.Value = RotationY = MR.transform.eulerAngles.y;
+            RotationZSlider.Value = RotationZ = MR.transform.eulerAngles.z;
         }
 
         void ChangedRotation()
@@ -187,9 +236,11 @@ namespace XultimateX.MeshBlockMod
                     {
                         continue;
                     }
+                    Meshs.Add(resources["/MeshBlockMod/Mesh/" + files[i].Name].mesh);
                     Debug.Log("Name:" + files[i].Name);
                     Debug.Log( "FullName:" + files[i].FullName );  
-                    Debug.Log( "DirectoryName:" + files[i].DirectoryName );  
+                    Debug.Log( "DirectoryName:" + files[i].DirectoryName );
+                    
                 }
             }
             else
