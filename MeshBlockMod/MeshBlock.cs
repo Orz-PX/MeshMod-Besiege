@@ -49,7 +49,7 @@ namespace XultimateX.MeshBlockMod
 
            //模块 载入资源
            .NeededResources(
-            MAT.NeedResources
+            NRF.NeedResources
             //= new System.Collections.Generic.List<NeededResource>
                             //   {
                                       //new NeededResource(ResourceType.Mesh,"/MeshBlockMod/ballast.obj")
@@ -80,7 +80,7 @@ namespace XultimateX.MeshBlockMod
 
         #endregion;
 
-
+        
 
        
 
@@ -122,7 +122,7 @@ namespace XultimateX.MeshBlockMod
 
         Rigidbody RB;
 
-        MeshBlockMod.NeedResourceExtend MT;
+        NeedResourceFormat NRF = MeshBlockMod.NRF;
 
         bool OpenedKeymapper = false;
 
@@ -162,10 +162,10 @@ namespace XultimateX.MeshBlockMod
             MassSlider = AddSlider("质量", "Mass", Mass, 0.2f, 2f);
             MassSlider.ValueChanged += (float value) => { Mass = value;};
 
-            MeshMenu = AddMenu("Mesh", 0, MeshBlockMod.MAT.MeshNames);
-            MeshMenu.ValueChanged += (int value) => { MF.mesh = resources[MeshBlockMod.MAT.MeshNames[value]].mesh; };
-            TextureMenu = AddMenu("Texture", 0, MeshBlockMod.MAT.TextureNames);
-            TextureMenu.ValueChanged += (int value) => {/*MR.sharedMaterial = new Material(Shader.Find("Transparent/Diffuse"));*/ MR.material.mainTexture = resources[MeshBlockMod.MAT.TextureNames[value]].texture; };
+            MeshMenu = AddMenu("Mesh", 0, MeshBlockMod.NRF.MeshNames);
+            MeshMenu.ValueChanged += (int value) => { MF.mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh; };
+            TextureMenu = AddMenu("Texture", 0, MeshBlockMod.NRF.TextureNames);
+            TextureMenu.ValueChanged += (int value) => {/*MR.sharedMaterial = new Material(Shader.Find("Transparent/Diffuse"));*/ MR.material.mainTexture = resources[MeshBlockMod.NRF.TextureFullNames[value]].texture; };
 
         }
 

@@ -33,17 +33,16 @@ namespace XultimateX.MeshBlockMod
         // to false.
         public override bool Preload { get; } = false;
 
-        public static List<NeededResource> LNR = new List<NeededResource>();
-
-        public static NeedResourceNames MAT = new NeedResourceNames("/MeshBlockMod/");
+        public static NeedResourceFormat NRF = new NeedResourceFormat();
 
         public override void OnLoad()
         {
             // Your initialization code here
 
             new GameObject().AddComponent<Updater>();
-            LNR = MAT.NeedResources;
+
             LoadBlock(MeshBlock);
+          
 
         }
 
