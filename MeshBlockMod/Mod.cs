@@ -33,22 +33,16 @@ namespace XultimateX.MeshBlockMod
         // to false.
         public override bool Preload { get; } = false;
 
-        public static string PathMesh = Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/Mesh";
-        public static string PathTexture = Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/Texture";
+        public static List<NeededResource> LNR = new List<NeededResource>();
 
-        public static List<NeededResource> LNR;
-
-        //public static List<string> ObjName = new List<string>();
-        //public static List<string> TextureName = new List<string>();
+        public static MeshAndTexture MAT = new MeshAndTexture("MeshBlockMod");
 
         public override void OnLoad()
         {
             // Your initialization code here
 
             new GameObject().AddComponent<Updater>();
-
-            //LNR = NR(Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/");
-
+            LNR = MAT.NeedResources;
             LoadBlock(MeshBlock);
 
         }

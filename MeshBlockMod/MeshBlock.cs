@@ -49,11 +49,13 @@ namespace XultimateX.MeshBlockMod
 
            //模块 载入资源
            .NeededResources(
-            LNR = new System.Collections.Generic.List<NeededResource>
-                               {
+            MAT.NeedResources
+            //= new System.Collections.Generic.List<NeededResource>
+                            //   {
+                                      //new NeededResource(ResourceType.Mesh,"/MeshBlockMod/ballast.obj")
             //                        //new NeededResource(ResourceType.Texture,"/MordenFirearmKitMod/RocketFire.png"),
             //                        //new NeededResource(ResourceType.Texture,"/MordenFirearmKitMod/RocketSmoke.png")
-                                }
+                            //    }
             )
 
            //模块 连接点
@@ -137,7 +139,7 @@ namespace XultimateX.MeshBlockMod
 
             MF = GetComponentsInChildren<MeshFilter>().ToList().Find(match => match.name == "Vis");
             MR = GetComponentsInChildren<MeshRenderer>().ToList().Find(match => match.name == "Vis");
-            MT = new MeshBlockMod.MeshAndTexture(MeshBlockMod.ResourcePath);
+            MT = new MeshBlockMod.MeshAndTexture("MeshBlockMod");
             CJ = GetComponent<ConfigurableJoint>();
             RB = GetComponent<Rigidbody>();
 
@@ -161,11 +163,14 @@ namespace XultimateX.MeshBlockMod
             MassSlider.ValueChanged += (float value) => { Mass = value;};
 
             MeshMenu = AddMenu("Mesh", 0, new List<string>() { "1","2","3","4"});
-            MeshMenu.ValueChanged += (int value) => { MF.mesh = MeshBlockMod.LNR[1].mesh; };
-            //TextureMenu = AddMenu("Texture", 0, MT.TextureNames);
-            //TextureMenu.ValueChanged += (int value) => {MR.sharedMaterial = new Material(Shader.Find("Transparent/Diffuse")); MR.sharedMaterial.mainTexture = MT.Textures[value]; };
+            MeshMenu.ValueChanged += (int value) => { MF.mesh = resources["/MeshBlockMod/ballast.obj"].mesh; };
+            //TextureMenu = AddMenu("Texture", 0, new List<string>() { "1", "2", "3", "4" });
+            //TextureMenu.ValueChanged += (int value) => {/*MR.sharedMaterial = new Material(Shader.Find("Transparent/Diffuse"));*/ MR.material.mainTexture = resources["/MeshBlockMod/Rocket.png"].texture; };
 
-
+            foreach (var item in resources)
+            {
+                Debug.Log(item.Key + item.Value);
+            }
         }
 
         public void OpenKeymapper()

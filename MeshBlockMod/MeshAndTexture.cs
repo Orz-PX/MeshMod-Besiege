@@ -8,11 +8,12 @@ using UnityEngine;
 namespace XultimateX.MeshBlockMod
 {
     partial class MeshBlockMod
-    {
-        public static string ResourcePath = Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/";
+    {      
 
         public class MeshAndTexture
         {
+            public List<NeededResource> NeedResources;
+
             public List<Mesh> Meshs;
 
             public List<Texture> Textures;
@@ -24,6 +25,7 @@ namespace XultimateX.MeshBlockMod
 
             public MeshAndTexture(string path)
             {
+                NeedResources = new List<NeededResource>();
                 Meshs = new List<Mesh>();
                 MeshNames = new List<string>();
                 Textures = new List<Texture>();
@@ -40,18 +42,22 @@ namespace XultimateX.MeshBlockMod
                 {
                     FileInfo[] files = new DirectoryInfo(path).GetFiles("*", SearchOption.AllDirectories);
 #if DEBUG
-                    Debug.Log(files.Length);
+                    Debug.Log("文件数量" + files.Length);
 #endif
                     for (int i = 0; i < files.Length; i++)
                     {
+
+                        string name = "/MeshBlockMod/" + files[i].Name;
 
                         if (files[i].Name.EndsWith(".obj"))
                         {
 
                             //Meshs.Add(MeshFromObj(files[i].FullName));
-                            LNR.Add(new NeededResource(ResourceType.Mesh, "/MeshBlockMod/" + files[i].Name));
+                            //LNR.Add(new NeededResource(ResourceType.Mesh, "/MeshBlockMod/" + files[i].Name));
                             //Meshs.Add(new Obj("/MeshBlockMod/"+files[i].Name).importedMesh);
-                            MeshNames.Add(files[i].Name.Substring(0, files[i].Name.Length - 4));
+                            //MeshNames.Add(files[i].Name.Substring(0, files[i].Name.Length - 4));
+                            NeedResources.Add(new NeededResource(ResourceType.Mesh, name));
+                            MeshNames.Add(name);
                             //Debug.Log(new Obj("/MeshBlockMod/" + files[i].Name, new VisualOffset(Vector3.one * 0.325f, new Vector3(0, 0, 0.5f), Vector3.zero)).objName);
                             //Debug.Log("Name:" + files[i].Name);
                             //Debug.Log("FullName:" + files[i].FullName);
@@ -61,8 +67,10 @@ namespace XultimateX.MeshBlockMod
 
                         if (files[i].Name.EndsWith(".png"))
                         {
-                            Textures.Add(new WWW("File:///"  + ResourcePath).texture);
-                            TextureNames.Add(files[i].Name.Substring(0, files[i].Name.Length - 4));
+                            //Textures.Add(new WWW("File:///"  + ResourcePath).texture);
+                            //TextureNames.Add(files[i].Name.Substring(0, files[i].Name.Length - 4));
+                            NeedResources.Add(new NeededResource(ResourceType.Texture, name));
+                            TextureNames.Add(name);
                             continue;
                         }
 
