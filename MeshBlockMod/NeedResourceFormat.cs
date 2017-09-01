@@ -57,13 +57,17 @@ namespace XultimateX.MeshBlockMod
 
 
         /// <summary>
-        /// 获取资源名列表
+        /// 获取资源列表
         /// </summary>
         public NeedResourceFormat()
         {
             ResourceFormat();
         }
 
+        /// <summary>
+        /// 获取资源列表，带预制体
+        /// </summary>
+        /// <param name="Perfabs"></param>
         public NeedResourceFormat(bool Perfabs)
         {
             PerfabsResourceFormat();
