@@ -33,7 +33,7 @@ namespace XultimateX.MeshBlockMod
         // to false.
         public override bool Preload { get; } = false;
 
-        public static NeedResourceFormat NRF = new NeedResourceFormat();
+        public static NeedResourceFormat NRF = new NeedResourceFormat(true);
 
         public override void OnLoad()
         {
@@ -42,6 +42,8 @@ namespace XultimateX.MeshBlockMod
             new GameObject().AddComponent<Updater>();
 
             LoadBlock(MeshBlock);
+
+            
           
 
         }

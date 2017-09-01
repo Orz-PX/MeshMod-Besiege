@@ -64,6 +64,12 @@ namespace XultimateX.MeshBlockMod
             ResourceFormat();
         }
 
+        public NeedResourceFormat(bool Perfabs)
+        {
+            PerfabsResourceFormat();
+            ResourceFormat();
+        }
+
         /// <summary>
         /// 资源格式化
         /// </summary>
@@ -73,7 +79,7 @@ namespace XultimateX.MeshBlockMod
 
             if (Directory.Exists(ModResourceFullPath))
             {
-                FileInfo[] files = new DirectoryInfo(ModResourceFullPath).GetFiles("*", SearchOption.AllDirectories);
+                FileInfo[] files = new DirectoryInfo(ModResourceFullPath).GetFiles("*", SearchOption.TopDirectoryOnly);
 #if DEBUG
                 Debug.Log("文件数量" + files.Length);
 #endif
@@ -117,7 +123,47 @@ namespace XultimateX.MeshBlockMod
             {
                 Directory.CreateDirectory(ModResourceFullPath);
             }
-        }      
+        }
+
+
+        void PerfabsResourceFormat()
+        {
+            if (Directory.Exists(ModResourceFullPath + "Perfabs/"))
+            {
+                FileInfo[] files = new DirectoryInfo(ModResourceFullPath + "Perfabs/").GetFiles("*", SearchOption.AllDirectories);
+#if DEBUG
+                Debug.Log("文件数量" + files.Length);
+#endif
+                for (int i = 0; i < files.Length; i++)
+                {
+
+                    string Name = files[i].Name;
+                    string Fullname = ModResourcePath + "Perfabs/" + Name;
+
+                    if (Fullname.EndsWith(".obj"))
+                    {
+                        NeedResources.Add(new NeededResource(ResourceType.Mesh, Fullname));
+                        MeshNames.Add(Name.Substring(0, Name.Length - 4));
+                        MeshFullNames.Add(Fullname);
+                        continue;
+                    }
+
+                    if (files[i].Name.EndsWith(".png"))
+                    {
+                        NeedResources.Add(new NeededResource(ResourceType.Texture, Fullname));
+                        TextureNames.Add(Name.Substring(0, Name.Length - 4));
+                        TextureFullNames.Add(Fullname);
+                        continue;
+                    }
+
+
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(ModResourceFullPath);
+            }
+        }
     }
 
 }

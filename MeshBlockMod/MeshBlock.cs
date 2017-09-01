@@ -126,7 +126,7 @@ namespace XultimateX.MeshBlockMod
 
         bool OpenedKeymapper = false;
 
-        bool RefreshMeshEnable = false;
+        bool RefreshVisualEnable = true;
 
         public override void SafeAwake()
         {
@@ -139,7 +139,7 @@ namespace XultimateX.MeshBlockMod
 
             MF = GetComponentsInChildren<MeshFilter>().ToList().Find(match => match.name == "Vis");
             MR = GetComponentsInChildren<MeshRenderer>().ToList().Find(match => match.name == "Vis");
-            //MT = new MeshBlockMod.MeshAndTexture("MeshBlockMod");
+            MR.material = new Material(Shader.Find("Diffuse"));
             CJ = GetComponent<ConfigurableJoint>();
             RB = GetComponent<Rigidbody>();
 
@@ -165,8 +165,9 @@ namespace XultimateX.MeshBlockMod
             MeshMenu = AddMenu("Mesh", 0, MeshBlockMod.NRF.MeshNames);
             MeshMenu.ValueChanged += (int value) => { MF.mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh; };
             TextureMenu = AddMenu("Texture", 0, MeshBlockMod.NRF.TextureNames);
-            TextureMenu.ValueChanged += (int value) => {/*MR.sharedMaterial = new Material(Shader.Find("Transparent/Diffuse"));*/ MR.material.mainTexture = resources[MeshBlockMod.NRF.TextureFullNames[value]].texture; };
+            TextureMenu.ValueChanged += (int value) => { MR.material.mainTexture = resources[MeshBlockMod.NRF.TextureFullNames[value]].texture; };
 
+            RefreshVisual();
         }
 
         public void OpenKeymapper()
@@ -224,13 +225,10 @@ namespace XultimateX.MeshBlockMod
             RB.mass = Mass * (MassFormSize ? transform.localScale.x * transform.localScale.y * transform.localScale.z : 1f);
         }
 
-        void RefreshMesh()
+        void RefreshVisual()
         {
-            if (RefreshMeshEnable)
-            {
-                RefreshMeshEnable = true;
-                //MF.mesh = MT.Meshs[MeshMenu.Value];
-            } 
+            MF.mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
+            MR.material.mainTexture = resources[MeshBlockMod.NRF.TextureFullNames[TextureMenu.Value]].texture;
         }
 
         protected virtual System.Collections.IEnumerator UpdateMapper()
@@ -255,26 +253,14 @@ namespace XultimateX.MeshBlockMod
             base.OnLoad(stream);
             LoadMapperValues(stream);
 
-            if (stream.HasKey("bmt-" + MeshMenu.Key)) { MeshMenu.Value = stream.ReadInt("bmt-" + MeshMenu.Key); RefreshMeshEnable = true; }
+            RefreshVisualEnable = true;
         }
 
         protected override void BuildingUpdate()
         {
-            base.BuildingUpdate();
             ChangedMass();
-            //RefreshMesh();
+            RefreshVisual();
         }
-
-        protected override void OnSimulateStart()
-        {
-            base.OnSimulateStart();
-            //foreach (AddingPoint ap in )
-            //{
-            //    Debug.Log(ap.sticky);
-            //}
-            
-        }
-
 
     }
 
