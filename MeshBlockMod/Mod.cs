@@ -35,7 +35,7 @@ namespace XultimateX.MeshBlockMod
 
         public static List<NeededResource> LNR = new List<NeededResource>();
 
-        public static MeshAndTexture MAT = new MeshAndTexture("MeshBlockMod");
+        public static MeshAndTexture MAT = new MeshAndTexture("/MeshBlockMod/");
 
         public override void OnLoad()
         {

@@ -8,7 +8,9 @@ using UnityEngine;
 namespace XultimateX.MeshBlockMod
 {
     partial class MeshBlockMod
-    {      
+    {
+
+        public static string ResourcePath = Application.dataPath + "/Mods/Blocks/Resources/MeshBlockMod/";
 
         public class MeshAndTexture
         {
@@ -38,16 +40,16 @@ namespace XultimateX.MeshBlockMod
             {
    
 
-                if (Directory.Exists(path))
+                if (Directory.Exists(ResourcePath))
                 {
-                    FileInfo[] files = new DirectoryInfo(path).GetFiles("*", SearchOption.AllDirectories);
+                    FileInfo[] files = new DirectoryInfo(ResourcePath).GetFiles("*", SearchOption.AllDirectories);
 #if DEBUG
                     Debug.Log("文件数量" + files.Length);
 #endif
                     for (int i = 0; i < files.Length; i++)
                     {
 
-                        string name = "/MeshBlockMod/" + files[i].Name;
+                        string name = path + files[i].Name;
 
                         if (files[i].Name.EndsWith(".obj"))
                         {

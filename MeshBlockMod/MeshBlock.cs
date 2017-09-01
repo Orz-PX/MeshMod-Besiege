@@ -139,7 +139,7 @@ namespace XultimateX.MeshBlockMod
 
             MF = GetComponentsInChildren<MeshFilter>().ToList().Find(match => match.name == "Vis");
             MR = GetComponentsInChildren<MeshRenderer>().ToList().Find(match => match.name == "Vis");
-            MT = new MeshBlockMod.MeshAndTexture("MeshBlockMod");
+            //MT = new MeshBlockMod.MeshAndTexture("MeshBlockMod");
             CJ = GetComponent<ConfigurableJoint>();
             RB = GetComponent<Rigidbody>();
 
@@ -162,15 +162,11 @@ namespace XultimateX.MeshBlockMod
             MassSlider = AddSlider("质量", "Mass", Mass, 0.2f, 2f);
             MassSlider.ValueChanged += (float value) => { Mass = value;};
 
-            MeshMenu = AddMenu("Mesh", 0, new List<string>() { "1","2","3","4"});
-            MeshMenu.ValueChanged += (int value) => { MF.mesh = resources["/MeshBlockMod/ballast.obj"].mesh; };
-            //TextureMenu = AddMenu("Texture", 0, new List<string>() { "1", "2", "3", "4" });
-            //TextureMenu.ValueChanged += (int value) => {/*MR.sharedMaterial = new Material(Shader.Find("Transparent/Diffuse"));*/ MR.material.mainTexture = resources["/MeshBlockMod/Rocket.png"].texture; };
+            MeshMenu = AddMenu("Mesh", 0, MeshBlockMod.MAT.MeshNames);
+            MeshMenu.ValueChanged += (int value) => { MF.mesh = resources[MeshBlockMod.MAT.MeshNames[value]].mesh; };
+            TextureMenu = AddMenu("Texture", 0, MeshBlockMod.MAT.TextureNames);
+            TextureMenu.ValueChanged += (int value) => {/*MR.sharedMaterial = new Material(Shader.Find("Transparent/Diffuse"));*/ MR.material.mainTexture = resources[MeshBlockMod.MAT.TextureNames[value]].texture; };
 
-            foreach (var item in resources)
-            {
-                Debug.Log(item.Key + item.Value);
-            }
         }
 
         public void OpenKeymapper()
@@ -266,7 +262,7 @@ namespace XultimateX.MeshBlockMod
         {
             base.BuildingUpdate();
             ChangedMass();
-            RefreshMesh();
+            //RefreshMesh();
         }
 
         protected override void OnSimulateStart()
