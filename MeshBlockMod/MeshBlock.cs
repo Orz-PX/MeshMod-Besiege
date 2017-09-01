@@ -122,7 +122,7 @@ namespace XultimateX.MeshBlockMod
 
         Rigidbody RB;
 
-        MeshBlockMod.MeshAndTexture MT;
+        MeshBlockMod.NeedResourceExtend MT;
 
         bool OpenedKeymapper = false;
 
@@ -229,7 +229,7 @@ namespace XultimateX.MeshBlockMod
             if (RefreshMeshEnable)
             {
                 RefreshMeshEnable = true;
-                MF.mesh = MT.Meshs[MeshMenu.Value];
+                //MF.mesh = MT.Meshs[MeshMenu.Value];
             } 
         }
 
