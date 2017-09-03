@@ -24,13 +24,13 @@ namespace XultimateX.MeshBlockMod
            .Obj(new System.Collections.Generic.List<Obj> { new Obj("/MeshBlockMod/Cube.obj", "/MeshBlockMod/Cube.png", new VisualOffset(Vector3.one * 0.325f, new Vector3(0, 0, 0.5f), Vector3.zero)) })
 
            //模块 图标
-           .IconOffset(new Icon(0.5f, Vector3.zero, new Vector3(45,0,45)))
+           .IconOffset(new Icon(0.5f, Vector3.zero, new Vector3(45, 0, 45)))
 
            //模块 组件
            .Components(new Type[] { typeof(MeshBlockScript) })
 
            //模块 设置模块属性
-           .Properties( new BlockProperties().SearchKeywords(new string[] { "Mesh", "网格" }))
+           .Properties(new BlockProperties().SearchKeywords(new string[] { "Mesh", "网格" }))
 
            //模块 质量
            .Mass(0.5f)
@@ -40,7 +40,8 @@ namespace XultimateX.MeshBlockMod
             .ShowCollider(true)
 #endif
            //模块 碰撞器
-           .CompoundCollider(new System.Collections.Generic.List<ColliderComposite>
+           .CompoundCollider(//NRF.ColliderComposites
+            new System.Collections.Generic.List<ColliderComposite>
                                 {
                                     //方块碰撞器
                                     ColliderComposite.Mesh("/MeshBlockMod/Cube.obj",Vector3.one*0.3f, new Vector3(0,0,0.5f), Vector3.zero)
@@ -92,7 +93,7 @@ namespace XultimateX.MeshBlockMod
     //网格模块脚本
     public class MeshBlockScript : BlockScript
     {
-
+        //声明旋转相关组件和变量
         MToggle RotationToggle;
         MSlider RotationXSlider;
         MSlider RotationYSlider;
@@ -101,32 +102,32 @@ namespace XultimateX.MeshBlockMod
         public float RotationY = 0;
         public float RotationZ = 0;
 
+        //声明硬度组件和变量
         MMenu HardnessMenu;
         public int Hardness = 1;
 
+        //声明质量来自尺寸相关组件和变量
         MToggle MassFormSizeToggle;
         MSlider MassSlider;
         public bool MassFormSize = false;
         public float Mass = 0.5f;
 
+        //声明菜单 网格 贴图 碰撞
         MMenu MeshMenu;
         MMenu TextureMenu;
+        MMenu ColliderMenu;
 
+        //声明需要使用的已存在组件
         MeshFilter MF;
-
         MeshRenderer MR;
-
-        //Collider 
-
+        MeshCollider MC; 
         ConfigurableJoint CJ;
-
         Rigidbody RB;
-
         NeedResourceFormat NRF = MeshBlockMod.NRF;
 
+        //标记是否打开过mapper
         bool OpenedKeymapper = false;
 
-        bool RefreshVisualEnable = true;
 
         public override void SafeAwake()
         {
@@ -134,15 +135,22 @@ namespace XultimateX.MeshBlockMod
 #if DEBUG
             Debug.Log("SafeAwake");
 #endif
-          
-            Game.OnKeymapperOpen += OpenKeymapper;
+
+
+            #region 获取组件
 
             MF = GetComponentsInChildren<MeshFilter>().ToList().Find(match => match.name == "Vis");
             MR = GetComponentsInChildren<MeshRenderer>().ToList().Find(match => match.name == "Vis");
+            MC = GetComponentsInChildren<MeshCollider>().ToList().Find(match => match.name == "MeshCollider");
             MR.material = new Material(Shader.Find("Diffuse"));
             CJ = GetComponent<ConfigurableJoint>();
             RB = GetComponent<Rigidbody>();
 
+            #endregion
+
+            #region 初始化组件
+
+            //旋转滑条相关组件
             RotationToggle = AddToggle("模型旋转", "Rotation", false);
             RotationXSlider = AddSlider("旋转X轴", "RotationX", RotationX, 0f, 360f);
             RotationYSlider = AddSlider("旋转Y轴", "RotationY", RotationY, 0f, 360f);
@@ -153,36 +161,42 @@ namespace XultimateX.MeshBlockMod
             RotationYSlider.ValueChanged += (float value) => { RotationY = value; ChangedRotation(); };
             RotationZSlider.ValueChanged += (float value) => { RotationZ = value; ChangedRotation(); };
 
-            HardnessMenu = AddMenu("Hardness", Hardness, new List<string>() { "无碳钢","低碳钢", "中碳钢", "高碳钢" });
-            HardnessMenu.ValueChanged += (int value) => { Hardness = value;ChangedHardness(); };
-            ChangedHardness();
+            //硬度组件
+            HardnessMenu = AddMenu("Hardness", Hardness, new List<string>() { "无碳钢", "低碳钢", "中碳钢", "高碳钢" });
+            HardnessMenu.ValueChanged += (int value) => { Hardness = value; ChangedHardness(); };
 
+            //质量组件
             MassFormSizeToggle = AddToggle("尺寸决定质量", "MassFormSize", MassFormSize);
-            MassFormSizeToggle.Toggled += (bool value) => { MassFormSize = value;};
+            MassFormSizeToggle.Toggled += (bool value) => { MassFormSize = value; };
             MassSlider = AddSlider("质量", "Mass", Mass, 0.2f, 2f);
-            MassSlider.ValueChanged += (float value) => { Mass = value;};
+            MassSlider.ValueChanged += (float value) => { Mass = value; };
 
+            //菜单组件 网格 贴图 碰撞
             MeshMenu = AddMenu("Mesh", 0, MeshBlockMod.NRF.MeshNames);
             MeshMenu.ValueChanged += (int value) => { MF.mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh; };
             TextureMenu = AddMenu("Texture", 0, MeshBlockMod.NRF.TextureNames);
             TextureMenu.ValueChanged += (int value) => { MR.material.mainTexture = resources[MeshBlockMod.NRF.TextureFullNames[value]].texture; };
+            ColliderMenu = AddMenu("Collider", 0, MeshBlockMod.NRF.MeshNames);
+            ColliderMenu.ValueChanged += (int value) => { MC.sharedMesh = MC.GetComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh; };
 
+            #endregion
+
+            #region 相关组件赋初值
+
+            ChangedHardness();
             RefreshVisual();
+
+            #endregion
+
         }
 
-        public void OpenKeymapper()
-        {
-            //OpenedKeymapper = true;
-            //RotationXSlider.Value = RotationX = MR.transform.eulerAngles.x;
-            //RotationYSlider.Value = RotationY = MR.transform.eulerAngles.y;
-            //RotationZSlider.Value = RotationZ = MR.transform.eulerAngles.z;
-        }
-
+        //显示旋转滑条
         void DisplayRotation(bool value)
         {
             RotationXSlider.DisplayInMapper = RotationYSlider.DisplayInMapper = RotationZSlider.DisplayInMapper = value;
         }
 
+        //改变旋转事件
         void ChangedRotation()
         {
             if (!OpenedKeymapper)
@@ -196,6 +210,7 @@ namespace XultimateX.MeshBlockMod
             
         }
 
+        //改变硬度事件
         void ChangedHardness()
         {
             CJ.projectionMode = JointProjectionMode.PositionAndRotation;
@@ -220,15 +235,27 @@ namespace XultimateX.MeshBlockMod
             }
         }
 
+        //改变质量事件
         void ChangedMass()
         {
             RB.mass = Mass * (MassFormSize ? transform.localScale.x * transform.localScale.y * transform.localScale.z : 1f);
         }
 
+        //刷新可视组件
         void RefreshVisual()
         {
+            //时刻更新网格和贴图
             MF.mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
             MR.material.mainTexture = resources[MeshBlockMod.NRF.TextureFullNames[TextureMenu.Value]].texture;
+
+            //添加碰撞箱可视组件
+            if (MC.GetComponent<MeshFilter>() == null)
+            {
+                MC.gameObject.AddComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
+                MeshRenderer mr = MC.gameObject.AddComponent<MeshRenderer>();
+                mr.material.shader = Shader.Find("Transparent/Diffuse");
+                mr.material.color = new Color(1, 1, 1, 0.25f);
+            }
         }
 
         protected virtual System.Collections.IEnumerator UpdateMapper()
@@ -252,8 +279,6 @@ namespace XultimateX.MeshBlockMod
         {
             base.OnLoad(stream);
             LoadMapperValues(stream);
-
-            RefreshVisualEnable = true;
         }
 
         protected override void BuildingUpdate()

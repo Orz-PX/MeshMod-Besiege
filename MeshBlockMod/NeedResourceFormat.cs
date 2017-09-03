@@ -23,12 +23,12 @@ namespace XultimateX.MeshBlockMod
         /// <summary>
         /// 模组资源文件夹路径
         /// </summary>
-        public static string ModResourcePath { get; } = "/" + ModName + "/";
+        public static string ModPath { get; } = "/" + ModName;
 
         /// <summary>
         /// 模组资源文件夹全路径
         /// </summary>
-        public static string ModResourceFullPath { get; private set; } = Application.dataPath + "/Mods/Blocks/Resources/" + ModName + "/";
+        public static string ModResourceFullPath { get; private set; } = Application.dataPath + "/Mods/Blocks/Resources" + ModPath;
 
         /// <summary>
         /// 资源列表
@@ -55,7 +55,6 @@ namespace XultimateX.MeshBlockMod
         /// </summary>
         public List<string> TextureFullNames = new List<string>();
 
-
         /// <summary>
         /// 获取资源列表
         /// </summary>
@@ -80,19 +79,24 @@ namespace XultimateX.MeshBlockMod
         void ResourceFormat()
         {
 
-
+            //判断文件夹是否存在
             if (Directory.Exists(ModResourceFullPath))
             {
+                //获取文件夹内所有文件
                 FileInfo[] files = new DirectoryInfo(ModResourceFullPath).GetFiles("*", SearchOption.TopDirectoryOnly);
 #if DEBUG
+                //输出文件数量
                 Debug.Log("文件数量" + files.Length);
 #endif
+                //载入所有有用文件
                 for (int i = 0; i < files.Length; i++)
                 {
+                    
+                    
+                    string Name = files[i].Name;//文件名
+                    string Fullname = ModPath + "/"+ Name;//文件全名
 
-                    string Name = files[i].Name;
-                    string Fullname = ModResourcePath + Name;
-
+                    //文件后缀为.obj
                     if (Fullname.EndsWith(".obj"))
                     {
 
@@ -100,6 +104,7 @@ namespace XultimateX.MeshBlockMod
                         //LNR.Add(new NeededResource(ResourceType.Mesh, "/MeshBlockMod/" + files[i].Name));
                         //Meshs.Add(new Obj("/MeshBlockMod/"+files[i].Name).importedMesh);
                         
+                        //添加网格相关信息
                         NeedResources.Add(new NeededResource(ResourceType.Mesh, Fullname));
                         MeshNames.Add(Name.Substring(0, Name.Length - 4));
                         MeshFullNames.Add(Fullname);
@@ -110,10 +115,12 @@ namespace XultimateX.MeshBlockMod
                         continue;
                     }
 
+                    //文件后缀为.png
                     if (files[i].Name.EndsWith(".png"))
                     {
                         //Textures.Add(new WWW("File:///"  + ResourcePath).texture);
                         //TextureNames.Add(files[i].Name.Substring(0, files[i].Name.Length - 4));
+                        //添加贴图相关信息
                         NeedResources.Add(new NeededResource(ResourceType.Texture, Fullname));
                         TextureNames.Add(Name.Substring(0, Name.Length - 4));
                         TextureFullNames.Add(Fullname);
@@ -125,16 +132,20 @@ namespace XultimateX.MeshBlockMod
             }
             else
             {
+                //创建文件夹
                 Directory.CreateDirectory(ModResourceFullPath);
             }
         }
 
-
+        /// <summary>
+        /// 预制资源格式化
+        /// </summary>
         void PerfabsResourceFormat()
-        {
-            if (Directory.Exists(ModResourceFullPath + "Perfabs/"))
+        {            
+            if (Directory.Exists(ModResourceFullPath + "/Perfabs"))
             {
-                FileInfo[] files = new DirectoryInfo(ModResourceFullPath + "Perfabs/").GetFiles("*", SearchOption.AllDirectories);
+
+                FileInfo[] files = new DirectoryInfo(ModResourceFullPath + "/Perfabs").GetFiles("*", SearchOption.AllDirectories);
 #if DEBUG
                 Debug.Log("文件数量" + files.Length);
 #endif
@@ -142,7 +153,7 @@ namespace XultimateX.MeshBlockMod
                 {
 
                     string Name = files[i].Name;
-                    string Fullname = ModResourcePath + "Perfabs/" + Name;
+                    string Fullname = ModPath + "/Perfabs/" + Name;
 
                     if (Fullname.EndsWith(".obj"))
                     {
@@ -160,7 +171,6 @@ namespace XultimateX.MeshBlockMod
                         continue;
                     }
 
-
                 }
             }
             else
@@ -168,6 +178,7 @@ namespace XultimateX.MeshBlockMod
                 Directory.CreateDirectory(ModResourceFullPath);
             }
         }
+
     }
 
 }

@@ -39,20 +39,17 @@ namespace XultimateX.MeshBlockMod
         {
             // Your initialization code here
 
-            new GameObject().AddComponent<Updater>();
+            new GameObject().AddComponent<Updater>();         
 
             LoadBlock(MeshBlock);
-
-            
-          
-
+                  
         }
 
         public override void OnUnload()
         {
             // Your code here
             // e.g. save configuration, destroy your objects if CanBeUnloaded is true etc
-
+            
             
         }
       
