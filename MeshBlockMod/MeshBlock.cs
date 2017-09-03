@@ -40,7 +40,8 @@ namespace XultimateX.MeshBlockMod
             .ShowCollider(true)
 #endif
            //模块 碰撞器
-           .CompoundCollider(new List<ColliderComposite>
+           .CompoundCollider(//NRF.ColliderComposites
+            new System.Collections.Generic.List<ColliderComposite>
                                 {
                                     //方块碰撞器
                                     ColliderComposite.Mesh("/MeshBlockMod/Cube.obj",Vector3.one*0.3f, new Vector3(0,0,0.5f), Vector3.zero)
@@ -70,7 +71,14 @@ namespace XultimateX.MeshBlockMod
 
                             });
 
-        #endregion;    
+        #endregion;
+
+        
+
+       
+
+
+
         
     }
 
@@ -207,26 +215,26 @@ namespace XultimateX.MeshBlockMod
         void ChangedHardness()
         {
 
-            //CJ.projectionMode = JointProjectionMode.PositionAndRotation;
-            //if (Hardness == 0)
-            //{
-            //    CJ.projectionAngle =10;
-            //    CJ.projectionDistance = 5;
-            //}
-            //if (Hardness == 1)
-            //{
-            //    CJ.projectionAngle =  5;
-            //    CJ.projectionDistance = 2;
-            //}
-            //if (Hardness == 2)
-            //{
-            //    CJ.projectionAngle =  2;
-            //    CJ.projectionDistance = 0.5f;
-            //}
-            //if (Hardness == 3)
-            //{
-            //    CJ.projectionAngle = CJ.projectionDistance = 0;
-            //}
+            CJ.projectionMode = JointProjectionMode.PositionAndRotation;
+            if (Hardness == 0)
+            {
+                CJ.projectionAngle = 10;
+                CJ.projectionDistance = 5;
+            }
+            if (Hardness == 1)
+            {
+                CJ.projectionAngle = 5;
+                CJ.projectionDistance = 2;
+            }
+            if (Hardness == 2)
+            {
+                CJ.projectionAngle = 2;
+                CJ.projectionDistance = 0.5f;
+            }
+            if (Hardness == 3)
+            {
+                CJ.projectionAngle = CJ.projectionDistance = 0;
+            }
         }
 
         //改变质量事件
@@ -246,6 +254,7 @@ namespace XultimateX.MeshBlockMod
             if (MC.GetComponent<MeshFilter>() == null)
             {
                 MC.gameObject.AddComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
+                MC.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
                 MeshRenderer mr = MC.gameObject.AddComponent<MeshRenderer>();              
                 mr.material.shader = Shader.Find("Transparent/Diffuse");
                 mr.material.color = new Color(1, 1, 1, 0.25f);
