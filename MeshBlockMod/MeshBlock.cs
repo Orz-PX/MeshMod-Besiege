@@ -109,6 +109,9 @@ namespace XultimateX.MeshBlockMod
         MMenu TextureMenu;
         MMenu ColliderMenu;
 
+        //声明显示碰撞组件
+        MToggle DisplayColliderToggle;
+
         //声明需要使用的已存在组件
         MeshFilter MF;
         MeshRenderer MR;
@@ -171,6 +174,10 @@ namespace XultimateX.MeshBlockMod
             ColliderMenu = AddMenu("Collider", 0, MeshBlockMod.NRF.MeshNames);
             ColliderMenu.ValueChanged += (int value) => { MC.sharedMesh = MC.GetComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh; };
 
+            //碰撞可视组件
+            DisplayColliderToggle = AddToggle("碰撞可视", "DisplayCollider", false);
+            DisplayColliderToggle.Toggled += (bool value) => { MC.GetComponent<MeshRenderer>().enabled = value; };
+
             #endregion
 
             #region 相关组件赋初值
@@ -179,6 +186,8 @@ namespace XultimateX.MeshBlockMod
             RefreshVisual();
 
             #endregion
+
+            if (GetComponent<DestroyJointIfNull>() == null) gameObject.AddComponent<DestroyJointIfNull>();
 
         }
 
@@ -205,26 +214,27 @@ namespace XultimateX.MeshBlockMod
         //改变硬度事件
         void ChangedHardness()
         {
-            CJ.projectionMode = JointProjectionMode.PositionAndRotation;
-            if (Hardness == 0)
-            {
-                CJ.projectionAngle =10;
-                CJ.projectionDistance = 5;
-            }
-            if (Hardness == 1)
-            {
-                CJ.projectionAngle =  5;
-                CJ.projectionDistance = 2;
-            }
-            if (Hardness == 2)
-            {
-                CJ.projectionAngle =  2;
-                CJ.projectionDistance = 0.5f;
-            }
-            if (Hardness == 3)
-            {
-                CJ.projectionAngle = CJ.projectionDistance = 0;
-            }
+
+            //CJ.projectionMode = JointProjectionMode.PositionAndRotation;
+            //if (Hardness == 0)
+            //{
+            //    CJ.projectionAngle =10;
+            //    CJ.projectionDistance = 5;
+            //}
+            //if (Hardness == 1)
+            //{
+            //    CJ.projectionAngle =  5;
+            //    CJ.projectionDistance = 2;
+            //}
+            //if (Hardness == 2)
+            //{
+            //    CJ.projectionAngle =  2;
+            //    CJ.projectionDistance = 0.5f;
+            //}
+            //if (Hardness == 3)
+            //{
+            //    CJ.projectionAngle = CJ.projectionDistance = 0;
+            //}
         }
 
         //改变质量事件
@@ -244,9 +254,10 @@ namespace XultimateX.MeshBlockMod
             if (MC.GetComponent<MeshFilter>() == null)
             {
                 MC.gameObject.AddComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
-                MeshRenderer mr = MC.gameObject.AddComponent<MeshRenderer>();
+                MeshRenderer mr = MC.gameObject.AddComponent<MeshRenderer>();              
                 mr.material.shader = Shader.Find("Transparent/Diffuse");
                 mr.material.color = new Color(1, 1, 1, 0.25f);
+                mr.enabled = DisplayColliderToggle.IsActive;
             }
         }
 
