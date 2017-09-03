@@ -40,8 +40,7 @@ namespace XultimateX.MeshBlockMod
             .ShowCollider(true)
 #endif
            //模块 碰撞器
-           .CompoundCollider(//NRF.ColliderComposites
-            new System.Collections.Generic.List<ColliderComposite>
+           .CompoundCollider(new System.Collections.Generic.List<ColliderComposite>
                                 {
                                     //方块碰撞器
                                     ColliderComposite.Mesh("/MeshBlockMod/Cube.obj",Vector3.one*0.3f, new Vector3(0,0,0.5f), Vector3.zero)
