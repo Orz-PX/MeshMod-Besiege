@@ -40,8 +40,8 @@ namespace XultimateX.MeshBlockMod
             .ShowCollider(true)
 #endif
            //模块 碰撞器
-           .CompoundCollider(//NRF.ColliderComposites
-            new System.Collections.Generic.List<ColliderComposite>
+           .CompoundCollider(
+            new List<ColliderComposite>
                                 {
                                     //方块碰撞器
                                     ColliderComposite.Mesh("/MeshBlockMod/Cube.obj",Vector3.one*0.3f, new Vector3(0,0,0.5f), Vector3.zero)
@@ -49,18 +49,10 @@ namespace XultimateX.MeshBlockMod
                              )
 
            //模块 载入资源
-           .NeededResources(
-            NRF.NeedResources
-            //= new System.Collections.Generic.List<NeededResource>
-                            //   {
-                                      //new NeededResource(ResourceType.Mesh,"/MeshBlockMod/ballast.obj")
-            //                        //new NeededResource(ResourceType.Texture,"/MordenFirearmKitMod/RocketFire.png"),
-            //                        //new NeededResource(ResourceType.Texture,"/MordenFirearmKitMod/RocketSmoke.png")
-                            //    }
-            )
+           .NeededResources(NRF.NeedResources)
 
            //模块 连接点
-           .AddingPoints(new System.Collections.Generic.List<AddingPoint>
+           .AddingPoints(new List<AddingPoint>
                             {
 
                                 new BasePoint(true,true) //底部连接点。第一个是指你能不能将其他模块安在该模块底部。第二个是指这个点是否是在开局时粘连其他链接点

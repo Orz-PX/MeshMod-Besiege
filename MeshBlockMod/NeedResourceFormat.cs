@@ -98,12 +98,7 @@ namespace XultimateX.MeshBlockMod
 
                     //文件后缀为.obj
                     if (Fullname.EndsWith(".obj"))
-                    {
-
-                        //Meshs.Add(MeshFromObj(files[i].FullName));
-                        //LNR.Add(new NeededResource(ResourceType.Mesh, "/MeshBlockMod/" + files[i].Name));
-                        //Meshs.Add(new Obj("/MeshBlockMod/"+files[i].Name).importedMesh);
-                        
+                    {                      
                         NeedResources.Add(new NeededResource(ResourceType.Mesh, Fullname));
                         MeshNames.Add(Name.Substring(0, Name.Length - 4));
                         MeshFullNames.Add(Fullname);
@@ -113,8 +108,6 @@ namespace XultimateX.MeshBlockMod
                     //文件后缀为.png
                     if (files[i].Name.EndsWith(".png"))
                     {
-                        //Textures.Add(new WWW("File:///"  + ResourcePath).texture);
-                        //TextureNames.Add(files[i].Name.Substring(0, files[i].Name.Length - 4));
                         NeedResources.Add(new NeededResource(ResourceType.Texture, Fullname));
                         TextureNames.Add(Name.Substring(0, Name.Length - 4));
                         TextureFullNames.Add(Fullname);
