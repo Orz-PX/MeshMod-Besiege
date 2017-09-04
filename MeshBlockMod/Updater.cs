@@ -117,6 +117,7 @@ namespace XultimateX.MeshBlockMod
         public void UrlToJosn(string owner,string path)
         {
             JosnUrl = "https://git.oschina.net/api/v5/repos/" + owner + "/" + path + "/releases/latest";
+            url = "https://git.oschina.net/" + owner + "/" + path + "/releases";
         }
 
         //画提示更新窗口
