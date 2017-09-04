@@ -85,7 +85,26 @@ namespace XultimateX.MeshBlockMod
     //网格模块脚本
     public class MeshBlockScript : BlockScript
     {
-        //声明旋转相关组件和变量
+        //声明功能页菜单
+        MMenu PageMenu;
+
+
+               
+        //声明基础功能组件
+        //声明质量来自尺寸 质量 硬度组件和相关变量
+        MToggle MassFormSizeToggle;   
+        MSlider MassSlider;
+        MMenu HardnessMenu;
+        public bool MassFormSize = false;
+        public float Mass = 0.5f;
+        public int Hardness = 1;
+
+        //声明自定模型功能组件
+        //声明网格 贴图 碰撞 碰撞显示 旋转相关组件和相关变量
+        MMenu MeshMenu;
+        MMenu TextureMenu;
+        MMenu ColliderMenu;
+        MToggle DisplayColliderToggle;
         MToggle RotationToggle;
         MSlider RotationXSlider;
         MSlider RotationYSlider;
@@ -94,23 +113,14 @@ namespace XultimateX.MeshBlockMod
         public float RotationY = 0;
         public float RotationZ = 0;
 
-        //声明硬度组件和变量
-        MMenu HardnessMenu;
-        public int Hardness = 1;
 
-        //声明质量来自尺寸相关组件和变量
-        MToggle MassFormSizeToggle;
-        MSlider MassSlider;
-        public bool MassFormSize = false;
-        public float Mass = 0.5f;
-
-        //声明菜单 网格 贴图 碰撞
-        MMenu MeshMenu;
-        MMenu TextureMenu;
-        MMenu ColliderMenu;
-
-        //声明显示碰撞组件
-        MToggle DisplayColliderToggle;
+        //声明自定外观功能组件
+        //声明 着色器 RGBA 组件
+        MMenu ShaderMenu;
+        MSlider RedSlider;
+        MSlider GreenSlider;
+        MSlider BlueSlider;
+        MSlider AlphaSlider;
 
         //声明需要使用的已存在组件
         MeshFilter MF;
@@ -145,28 +155,30 @@ namespace XultimateX.MeshBlockMod
 
             #region 初始化组件
 
-            //旋转滑条相关组件
-            RotationToggle = AddToggle("模型旋转", "Rotation", false);
-            RotationXSlider = AddSlider("旋转X轴", "RotationX", RotationX, 0f, 360f);
-            RotationYSlider = AddSlider("旋转Y轴", "RotationY", RotationY, 0f, 360f);
-            RotationZSlider = AddSlider("旋转Z轴", "RotationZ", RotationZ, 0f, 360f);
-            DisplayRotation(false);
-            RotationToggle.Toggled += (bool value) => { DisplayRotation(value); };
-            RotationXSlider.ValueChanged += (float value) => { RotationX = value; ChangedRotation(); };
-            RotationYSlider.ValueChanged += (float value) => { RotationY = value; ChangedRotation(); };
-            RotationZSlider.ValueChanged += (float value) => { RotationZ = value; ChangedRotation(); };
+            //功能页组件
+            PageMenu = AddMenu("Page", 0, new List<string>() {"基础功能","自定模型","自定外观" });
+            PageMenu.ValueChanged += (int value) => { DisplayInMapper(); };
 
-            //硬度组件
+            //基础功能组件
+            //硬度 尺寸决定质量 质量组件
             HardnessMenu = AddMenu("Hardness", Hardness, new List<string>() { "无碳钢", "低碳钢", "中碳钢", "高碳钢" });
-            HardnessMenu.ValueChanged += (int value) => { Hardness = value; ChangedHardness(); };
-
-            //质量组件
+            HardnessMenu.ValueChanged += (int value) => { Hardness = value; ChangedHardness(); };           
             MassFormSizeToggle = AddToggle("尺寸决定质量", "MassFormSize", MassFormSize);
             MassFormSizeToggle.Toggled += (bool value) => { MassFormSize = value; };
             MassSlider = AddSlider("质量", "Mass", Mass, 0.2f, 2f);
             MassSlider.ValueChanged += (float value) => { Mass = value; };
 
-            //菜单组件 网格 贴图 碰撞
+            //自定模型组件
+            //旋转滑条；网格、贴图、碰撞菜单；碰撞可视相关组件
+            //RotationToggle = AddToggle("模型旋转", "Rotation", false);
+            RotationXSlider = AddSlider("旋转X轴", "RotationX", RotationX, 0f, 360f);
+            RotationYSlider = AddSlider("旋转Y轴", "RotationY", RotationY, 0f, 360f);
+            RotationZSlider = AddSlider("旋转Z轴", "RotationZ", RotationZ, 0f, 360f);           
+            //RotationToggle.Toggled += (bool value) => { DisplayInMapper(); };
+            RotationXSlider.ValueChanged += (float value) => { RotationX = value; ChangedRotation(); };
+            RotationYSlider.ValueChanged += (float value) => { RotationY = value; ChangedRotation(); };
+            RotationZSlider.ValueChanged += (float value) => { RotationZ = value; ChangedRotation(); };
+
             MeshMenu = AddMenu("Mesh", 0, MeshBlockMod.NRF.MeshNames);
             MeshMenu.ValueChanged += (int value) => { MF.mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh; };
             TextureMenu = AddMenu("Texture", 0, MeshBlockMod.NRF.TextureNames);
@@ -174,15 +186,29 @@ namespace XultimateX.MeshBlockMod
             ColliderMenu = AddMenu("Collider", 0, MeshBlockMod.NRF.MeshNames);
             ColliderMenu.ValueChanged += (int value) => { MC.sharedMesh = MC.GetComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh; };
 
-            //碰撞可视组件
             DisplayColliderToggle = AddToggle("碰撞可视", "DisplayCollider", false);
             DisplayColliderToggle.Toggled += (bool value) => { MC.GetComponent<MeshRenderer>().enabled = value; };
+
+            //自定外观组件
+            //着色菜单；RGBA滑条相关组件
+            ShaderMenu = AddMenu("Shader", 0, new List<string>() {"漫反射","透明"});
+            ShaderMenu.ValueChanged += (int value) =>{ ChangedShader(); };
+            RedSlider = AddSlider("红色通道", "Red", 1f, 0f, 1f);
+            GreenSlider = AddSlider("绿色通道", "Green", 1f, 0f, 1f);
+            BlueSlider = AddSlider("蓝色通道", "Blue", 1f, 0f, 1f);
+            AlphaSlider = AddSlider("Alpha通道", "Alpha", 1f, 0f, 1f);
+            RedSlider.ValueChanged += (float value) => { ChangedColor(); };
+            GreenSlider.ValueChanged += (float value) => { ChangedColor(); };
+            BlueSlider.ValueChanged += (float value) => { ChangedColor(); };
+            AlphaSlider.ValueChanged += (float value) => { ChangedColor(); };
+
 
             #endregion
 
             #region 相关组件赋初值
 
             ChangedHardness();
+            DisplayInMapper();
             RefreshVisual();
 
             #endregion
@@ -191,10 +217,17 @@ namespace XultimateX.MeshBlockMod
 
         }
 
-        //显示旋转滑条
-        void DisplayRotation(bool value)
+        //组件显示事件
+        void DisplayInMapper()
         {
-            RotationXSlider.DisplayInMapper = RotationYSlider.DisplayInMapper = RotationZSlider.DisplayInMapper = value;
+
+            HardnessMenu.DisplayInMapper = MassFormSizeToggle.DisplayInMapper = MassSlider.DisplayInMapper = PageMenu.Value == 0;
+
+            MeshMenu.DisplayInMapper = TextureMenu.DisplayInMapper = ColliderMenu.DisplayInMapper = DisplayColliderToggle.DisplayInMapper = PageMenu.Value == 1;
+            RotationXSlider.DisplayInMapper = RotationYSlider.DisplayInMapper = RotationZSlider.DisplayInMapper = /*RotationToggle.IsActive &&*/ PageMenu.Value == 1;
+
+            ShaderMenu.DisplayInMapper = RedSlider.DisplayInMapper = GreenSlider.DisplayInMapper = BlueSlider.DisplayInMapper = AlphaSlider.DisplayInMapper = PageMenu.Value == 2;
+
         }
 
         //改变旋转事件
@@ -237,11 +270,32 @@ namespace XultimateX.MeshBlockMod
             }
         }
 
+        //改变着色器
+        void ChangedShader()
+        {
+            switch (ShaderMenu.Value)
+            {
+                case 1: MR.material.shader = Shader.Find("Transparent/Diffuse"); break;
+                case 2: MR.material.shader = Shader.Find("Self-Illuminated/Diffuse"); break;
+                case 3: MR.material.shader = Shader.Find("Reflective/Diffuse"); break;
+                default: MR.material.shader = Shader.Find("Diffuse"); break;
+
+            }
+        }
+
+        //改变颜色事件
+        void ChangedColor()
+        {
+            MR.material.color = new Color(RedSlider.Value, GreenSlider.Value, BlueSlider.Value, AlphaSlider.Value);
+        }
+
         //改变质量事件
         void ChangedMass()
         {
             RB.mass = Mass * (MassFormSize ? transform.localScale.x * transform.localScale.y * transform.localScale.z : 1f);
         }
+
+
 
         //刷新可视组件
         void RefreshVisual()
@@ -249,6 +303,7 @@ namespace XultimateX.MeshBlockMod
             //时刻更新网格和贴图
             MF.mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
             MR.material.mainTexture = resources[MeshBlockMod.NRF.TextureFullNames[TextureMenu.Value]].texture;
+            ChangedShader();ChangedColor();
 
             //添加碰撞箱可视组件
             if (MC.GetComponent<MeshFilter>() == null)
