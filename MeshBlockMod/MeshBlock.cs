@@ -21,7 +21,7 @@ namespace XultimateX.MeshBlockMod
            .BlockName("Mesh Block")
 
            //模块 模型信息
-           .Obj(new System.Collections.Generic.List<Obj> { new Obj("/MeshBlockMod/Cube.obj", "/MeshBlockMod/Cube.png", new VisualOffset(Vector3.one * 0.325f, new Vector3(0, 0, 0.5f), Vector3.zero)) })
+           .Obj(new System.Collections.Generic.List<Obj> { new Obj("/MeshBlockMod/Cube.obj", "/MeshBlockMod/Cube.png", new VisualOffset(Vector3.one * 0.3f, new Vector3(0, 0, 0.5f), Vector3.zero)) })
 
            //模块 图标
            .IconOffset(new Icon(0.5f, Vector3.zero, new Vector3(45, 0, 45)))
@@ -58,15 +58,15 @@ namespace XultimateX.MeshBlockMod
                                                 .Motionable(false,false,false) //底点在X，Y，Z轴上是否是能够活动的。
                                                 .SetStickyRadius(0.25f) //粘连距离
                
-                                ,new AddingPoint(
-                                                new Vector3(  0f,  0f,  0.5f), //位置
-                                                new Vector3(-90f,  0f,  0f), //旋转
-                                                false                       //这个点是否是在开局时粘连其他链接点
-                                                ).SetStickyRadius(0.15f)      //粘连距离
-                                ,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,0),false).SetStickyRadius(0.15f)
-                                ,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,90),false).SetStickyRadius(0.15f)
-                                ,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,180),false).SetStickyRadius(0.15f)
-                                ,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,270),false).SetStickyRadius(0.15f)
+                                //,new AddingPoint(
+                                //                new Vector3(  0f,  0f,  0.5f), //位置
+                                //                new Vector3(-90f,  0f,  0f), //旋转
+                                //                false                       //这个点是否是在开局时粘连其他链接点
+                                //                ).SetStickyRadius(0.15f)      //粘连距离
+                                //,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,0),false).SetStickyRadius(0.15f)
+                                //,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,90),false).SetStickyRadius(0.15f)
+                                //,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,180),false).SetStickyRadius(0.15f)
+                                //,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,270),false).SetStickyRadius(0.15f)
 
                             });
 
@@ -79,9 +79,8 @@ namespace XultimateX.MeshBlockMod
     {
         //声明功能页菜单
         MMenu PageMenu;
+              
 
-
-               
         //声明基础功能组件
         //声明质量来自尺寸 质量 硬度组件和相关变量
         MToggle MassFormSizeToggle;   
@@ -97,7 +96,7 @@ namespace XultimateX.MeshBlockMod
         MMenu TextureMenu;
         MMenu ColliderMenu;
         MToggle DisplayColliderToggle;
-        MToggle RotationToggle;
+        //MToggle RotationToggle;
         MSlider RotationXSlider;
         MSlider RotationYSlider;
         MSlider RotationZSlider;
@@ -142,6 +141,7 @@ namespace XultimateX.MeshBlockMod
             MR.material = new Material(Shader.Find("Diffuse"));
             CJ = GetComponent<ConfigurableJoint>();
             RB = GetComponent<Rigidbody>();
+            
 
             #endregion
 
@@ -202,10 +202,12 @@ namespace XultimateX.MeshBlockMod
             ChangedHardness();
             DisplayInMapper();
             RefreshVisual();
+            ChangedPoint();
 
             #endregion
 
             if (GetComponent<DestroyJointIfNull>() == null) gameObject.AddComponent<DestroyJointIfNull>();
+
 
         }
 
@@ -287,12 +289,18 @@ namespace XultimateX.MeshBlockMod
             RB.mass = Mass * (MassFormSize ? transform.localScale.x * transform.localScale.y * transform.localScale.z : 1f);
         }
 
-
+        //改变安装点事件
+        void ChangedPoint()
+        {
+            BoxCollider BC = GetComponentsInChildren<BoxCollider>().ToList().Find(match => match.name == "Adding Point");
+            BC.center = Vector3.zero;
+            BC.size = Vector3.one * 1.1f;
+        }
 
         //刷新可视组件
         void RefreshVisual()
         {
-            //时刻更新网格和贴图
+            //更新网格和贴图
             MF.mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
             MR.material.mainTexture = resources[MeshBlockMod.NRF.TextureFullNames[TextureMenu.Value]].texture;
             ChangedShader();ChangedColor();
@@ -302,12 +310,18 @@ namespace XultimateX.MeshBlockMod
             {
                 MC.gameObject.AddComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
                 MC.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
-                MeshRenderer mr = MC.gameObject.AddComponent<MeshRenderer>();              
+                MeshRenderer mr = MC.gameObject.AddComponent<MeshRenderer>();
                 mr.material.shader = Shader.Find("Transparent/Diffuse");
                 mr.material.color = new Color(1, 1, 1, 0.25f);
                 mr.enabled = DisplayColliderToggle.IsActive;
             }
+            else
+            {
+                MC.GetComponent<MeshFilter>();
+            }
+            
         }
+
 
         protected virtual System.Collections.IEnumerator UpdateMapper()
         {
@@ -335,7 +349,10 @@ namespace XultimateX.MeshBlockMod
         protected override void BuildingUpdate()
         {
             ChangedMass();
-            RefreshVisual();
+            if (!(GetComponent<BlockVisualController>().Highlighted || GetComponent<BlockVisualController>().Selected ))
+            {
+                RefreshVisual();
+            }
         }
 
     }
