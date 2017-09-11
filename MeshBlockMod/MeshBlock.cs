@@ -57,16 +57,6 @@ namespace XultimateX.MeshBlockMod
                                 new BasePoint(true,true) //底部连接点。第一个是指你能不能将其他模块安在该模块底部。第二个是指这个点是否是在开局时粘连其他链接点
                                                 .Motionable(false,false,false) //底点在X，Y，Z轴上是否是能够活动的。
                                                 .SetStickyRadius(0.25f) //粘连距离
-               
-                                //,new AddingPoint(
-                                //                new Vector3(  0f,  0f,  0.5f), //位置
-                                //                new Vector3(-90f,  0f,  0f), //旋转
-                                //                false                       //这个点是否是在开局时粘连其他链接点
-                                //                ).SetStickyRadius(0.15f)      //粘连距离
-                                //,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,0),false).SetStickyRadius(0.15f)
-                                //,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,90),false).SetStickyRadius(0.15f)
-                                //,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,180),false).SetStickyRadius(0.15f)
-                                //,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,270),false).SetStickyRadius(0.15f)
 
                             });
 
@@ -96,7 +86,6 @@ namespace XultimateX.MeshBlockMod
         MMenu TextureMenu;
         MMenu ColliderMenu;
         MToggle DisplayColliderToggle;
-        //MToggle RotationToggle;
         MSlider RotationXSlider;
         MSlider RotationYSlider;
         MSlider RotationZSlider;
@@ -166,7 +155,6 @@ namespace XultimateX.MeshBlockMod
             RotationXSlider = AddSlider("旋转X轴", "RotationX", RotationX, 0f, 360f);
             RotationYSlider = AddSlider("旋转Y轴", "RotationY", RotationY, 0f, 360f);
             RotationZSlider = AddSlider("旋转Z轴", "RotationZ", RotationZ, 0f, 360f);           
-            //RotationToggle.Toggled += (bool value) => { DisplayInMapper(); };
             RotationXSlider.ValueChanged += (float value) => { RotationX = value; ChangedRotation(); };
             RotationYSlider.ValueChanged += (float value) => { RotationY = value; ChangedRotation(); };
             RotationZSlider.ValueChanged += (float value) => { RotationZ = value; ChangedRotation(); };
