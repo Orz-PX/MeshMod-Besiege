@@ -112,6 +112,12 @@ namespace XultimateX.MeshBlockMod
         public float RotationY = 0;
         public float RotationZ = 0;
 
+        MSlider PositionXSlider;
+        MSlider PositionYSlider;
+        MSlider PositionZSlider;
+        public float PositionX = 1;
+        public float PositionY = 0;
+        public float PositionZ = 0;
 
         //声明自定外观功能组件
         //声明 着色器 RGBA 组件
@@ -123,11 +129,12 @@ namespace XultimateX.MeshBlockMod
 
         //声明需要使用的已存在组件
         MeshFilter MF;
-        MeshRenderer MR;
+        MeshRenderer MR,MC_MR;
         MeshCollider MC; 
         ConfigurableJoint CJ;
         Rigidbody RB;
         NeedResourceFormat NRF = MeshBlockMod.NRF;
+        
 
         //标记是否打开过mapper
         bool OpenedKeymapper = false;
@@ -145,8 +152,9 @@ namespace XultimateX.MeshBlockMod
 
             MF = GetComponentsInChildren<MeshFilter>().ToList().Find(match => match.name == "Vis");
             MR = GetComponentsInChildren<MeshRenderer>().ToList().Find(match => match.name == "Vis");
-            MC = GetComponentsInChildren<MeshCollider>().ToList().Find(match => match.name == "MeshCollider");
+            MC = GetComponentsInChildren<MeshCollider>().ToList().Find(match => match.name == "MeshCollider");       
             MR.material = new Material(Shader.Find("Diffuse"));
+            MC_MR = MC.GetComponent<MeshRenderer>();
             CJ = GetComponent<ConfigurableJoint>();
             RB = GetComponent<Rigidbody>();
             
@@ -169,15 +177,22 @@ namespace XultimateX.MeshBlockMod
             MassSlider.ValueChanged += (float value) => { Mass = value; };
 
             //自定模型组件
-            //旋转滑条；网格、贴图、碰撞菜单；碰撞可视相关组件
+            //旋转、位置滑条；网格、贴图、碰撞菜单；碰撞可视相关组件；
             //RotationToggle = AddToggle("模型旋转", "Rotation", false);
-            RotationXSlider = AddSlider("旋转X轴", "RotationX", RotationX, 0f, 360f);
-            RotationYSlider = AddSlider("旋转Y轴", "RotationY", RotationY, 0f, 360f);
-            RotationZSlider = AddSlider("旋转Z轴", "RotationZ", RotationZ, 0f, 360f);           
+            RotationXSlider = AddSlider("旋转X轴", "RotationX", RotationX = MR.transform.localEulerAngles.x, 0f, 360f);
+            RotationYSlider = AddSlider("旋转Y轴", "RotationY", RotationY = MR.transform.localEulerAngles.y, 0f, 360f);
+            RotationZSlider = AddSlider("旋转Z轴", "RotationZ", RotationZ = MR.transform.localEulerAngles.z, 0f, 360f);           
             //RotationToggle.Toggled += (bool value) => { DisplayInMapper(); };
             RotationXSlider.ValueChanged += (float value) => { RotationX = value; ChangedRotation(); };
             RotationYSlider.ValueChanged += (float value) => { RotationY = value; ChangedRotation(); };
             RotationZSlider.ValueChanged += (float value) => { RotationZ = value; ChangedRotation(); };
+
+            PositionXSlider = AddSlider("移动X轴", "PositionX", PositionX = MR.transform.localPosition.x, -3f, 3f);
+            PositionYSlider = AddSlider("移动Y轴", "PositionY", PositionY = MR.transform.localPosition.y, -3f, 3f);
+            PositionZSlider = AddSlider("移动Z轴", "PositionZ", PositionZ = MR.transform.localPosition.z, -3f, 3f);
+            PositionXSlider.ValueChanged += (float value) => { PositionX = value; ChangedPosition(); };
+            PositionYSlider.ValueChanged += (float value) => { PositionY = value; ChangedPosition(); };
+            PositionZSlider.ValueChanged += (float value) => { PositionZ = value; ChangedPosition(); };
 
             MeshMenu = AddMenu("Mesh", 0, MeshBlockMod.NRF.MeshNames);
             MeshMenu.ValueChanged += (int value) => { MF.mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh; };
@@ -187,7 +202,9 @@ namespace XultimateX.MeshBlockMod
             ColliderMenu.ValueChanged += (int value) => { MC.sharedMesh = MC.GetComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh; };
 
             DisplayColliderToggle = AddToggle("碰撞可视", "DisplayCollider", false);
-            DisplayColliderToggle.Toggled += (bool value) => { MC.GetComponent<MeshRenderer>().enabled = value; };
+            DisplayColliderToggle.Toggled += (bool value) => {/* MC.GetComponent<MeshRenderer>().enabled = value; /*MR.transform.localPosition += new Vector3(1, 0, 0);*/ };
+
+
 
             //自定外观组件
             //着色菜单；RGBA滑条相关组件
@@ -211,6 +228,7 @@ namespace XultimateX.MeshBlockMod
             DisplayInMapper();
             RefreshVisual();
             ChangedPoint();
+            CJ.breakForce = CJ.breakTorque = 50000;
 
             #endregion
 
@@ -222,12 +240,15 @@ namespace XultimateX.MeshBlockMod
         //组件显示事件
         void DisplayInMapper()
         {
-
+            //基础组件显示
             HardnessMenu.DisplayInMapper = MassFormSizeToggle.DisplayInMapper = MassSlider.DisplayInMapper = PageMenu.Value == 0;
 
+            //自定模型组件显示
             MeshMenu.DisplayInMapper = TextureMenu.DisplayInMapper = ColliderMenu.DisplayInMapper = DisplayColliderToggle.DisplayInMapper = PageMenu.Value == 1;
             RotationXSlider.DisplayInMapper = RotationYSlider.DisplayInMapper = RotationZSlider.DisplayInMapper = /*RotationToggle.IsActive &&*/ PageMenu.Value == 1;
+            PositionXSlider.DisplayInMapper = PositionYSlider.DisplayInMapper = PositionZSlider.DisplayInMapper = PageMenu.Value == 1;
 
+            //自定外观组件显示
             ShaderMenu.DisplayInMapper = RedSlider.DisplayInMapper = GreenSlider.DisplayInMapper = BlueSlider.DisplayInMapper = AlphaSlider.DisplayInMapper = PageMenu.Value == 2;
 
         }
@@ -244,6 +265,12 @@ namespace XultimateX.MeshBlockMod
                 OpenedKeymapper = false;
             }
             
+        }
+
+        //改变位置事件
+        void ChangedPosition()
+        {
+            MR.transform.localPosition = new Vector3(PositionXSlider.Value, PositionYSlider.Value, PositionZSlider.Value);
         }
 
         //改变硬度事件
@@ -298,11 +325,12 @@ namespace XultimateX.MeshBlockMod
         }
 
         //改变安装点事件
+        //改变安装点大小  为正方体
         void ChangedPoint()
         {
             BoxCollider BC = GetComponentsInChildren<BoxCollider>().ToList().Find(match => match.name == "Adding Point");
             BC.center = Vector3.zero;
-            BC.size = Vector3.one * 1.1f;
+            BC.size = Vector3.one * 1.1f;          
         }
 
         //刷新可视组件
@@ -356,11 +384,27 @@ namespace XultimateX.MeshBlockMod
 
         protected override void BuildingUpdate()
         {
+            //改变质量
             ChangedMass();
+            
+            //没被选中时就刷新显示
             if (!(GetComponent<BlockVisualController>().Highlighted || GetComponent<BlockVisualController>().Selected ))
             {
                 RefreshVisual();
             }
+
+            //碰撞箱在建造模式下总是显示
+            if (MC_MR.enabled == false)
+            {
+                MC_MR.enabled = true;
+            }
+
+        }
+
+        protected override void OnSimulateUpdate()
+        {
+            //模拟模式下碰撞显示生效就显示碰撞箱 否则 自动隐藏
+            MC_MR.enabled = (MC_MR.enabled == false && DisplayColliderToggle.IsActive) ? true : false;
         }
 
     }
