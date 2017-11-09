@@ -8,7 +8,7 @@ using spaar.ModLoader.UI;
 namespace XultimateX.MeshBlockMod
 { 
     
-    //Mod更新检查组件
+    //Mod更新检查组件    V20
     public class Updater : MonoBehaviour
     {
         
