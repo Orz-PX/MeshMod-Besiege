@@ -1,72 +1,71 @@
-﻿using spaar.ModLoader;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using Modding;
 
-namespace XultimateX.MeshBlockMod
-{
-    partial class MeshBlockMod
-    {
 
-        public Block MeshBlock = new Block()
-        #region 网格模块 基本属性  
+//    partial class MeshBlockMod
+//    {
 
-           //模块 ID
-           .ID(655)
+//        public Block MeshBlock = new Block()
+//        #region 网格模块 基本属性  
 
-           //模块 名称
-           .BlockName("Mesh Block")
+//           //模块 ID
+//           .ID(655)
 
-           //模块 模型信息
-           .Obj(new System.Collections.Generic.List<Obj> { new Obj("/MeshBlockMod/Cube.obj", "/MeshBlockMod/Cube.png", new VisualOffset(Vector3.one * 0.3f, new Vector3(0, 0, 0.5f), Vector3.zero)) })
+//           //模块 名称
+//           .BlockName("Mesh Block")
 
-           //模块 图标
-           .IconOffset(new Icon(0.5f, Vector3.zero, new Vector3(45, 0, 45)))
+//           //模块 模型信息
+//           .Obj(new System.Collections.Generic.List<Obj> { new Obj("/MeshBlockMod/Cube.obj", "/MeshBlockMod/Cube.png", new VisualOffset(Vector3.one * 0.3f, new Vector3(0, 0, 0.5f), Vector3.zero)) })
 
-           //模块 组件
-           .Components(new Type[] { typeof(MeshBlockScript) })
+//           //模块 图标
+//           .IconOffset(new Icon(0.5f, Vector3.zero, new Vector3(45, 0, 45)))
 
-           //模块 设置模块属性
-           .Properties(new BlockProperties().SearchKeywords(new string[] { "Mesh", "网格" }))
+//           //模块 组件
+//           .Components(new Type[] { typeof(MeshBlockScript) })
 
-           //模块 质量
-           .Mass(0.5f)
+//           //模块 设置模块属性
+//           .Properties(new BlockProperties().SearchKeywords(new string[] { "Mesh", "网格" }))
 
-            //模块 是否显示碰撞器
-#if DEBUG
-            .ShowCollider(true)
-#endif
-           //模块 碰撞器
-           .CompoundCollider(new System.Collections.Generic.List<ColliderComposite>
-                                {
-                                    //方块碰撞器
-                                    ColliderComposite.Mesh("/MeshBlockMod/Cube.obj",Vector3.one*0.3f, new Vector3(0,0,0.5f), Vector3.zero)
+//           //模块 质量
+//           .Mass(0.5f)
 
-                                    //球形碰撞器
-                                    ,ColliderComposite.Sphere(0.5f,Vector3.forward*0.5f,Vector3.zero)
-                                }
-                             )
+//            //模块 是否显示碰撞器
+//#if DEBUG
+//            .ShowCollider(true)
+//#endif
+//           //模块 碰撞器
+//           .CompoundCollider(new System.Collections.Generic.List<ColliderComposite>
+//                                {
+//                                    //方块碰撞器
+//                                    ColliderComposite.Mesh("/MeshBlockMod/Cube.obj",Vector3.one*0.3f, new Vector3(0,0,0.5f), Vector3.zero)
 
-           //模块 载入资源
-           .NeededResources(NRF.NeedResources)
+//                                    //球形碰撞器
+//                                    ,ColliderComposite.Sphere(0.5f,Vector3.forward*0.5f,Vector3.zero)
+//                                }
+//                             )
 
-           //模块 连接点
-           .AddingPoints(new List<AddingPoint>
-                            {
+//           //模块 载入资源
+//           .NeededResources(NRF.NeedResources)
 
-                                new BasePoint(true,true) //底部连接点。第一个是指你能不能将其他模块安在该模块底部。第二个是指这个点是否是在开局时粘连其他链接点
-                                                .Motionable(false,false,false) //底点在X，Y，Z轴上是否是能够活动的。
-                                                .SetStickyRadius(0.25f) //粘连距离
-                                ,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,90),true)
+//           //模块 连接点
+//           .AddingPoints(new List<AddingPoint>
+//                            {
 
-                            });
+//                                new BasePoint(true,true) //底部连接点。第一个是指你能不能将其他模块安在该模块底部。第二个是指这个点是否是在开局时粘连其他链接点
+//                                                .Motionable(false,false,false) //底点在X，Y，Z轴上是否是能够活动的。
+//                                                .SetStickyRadius(0.25f) //粘连距离
+//                                ,new AddingPoint(new Vector3(0,0,0.5f),new Vector3(0,0,90),true)
 
-        #endregion;
+//                            });
 
-    }
+//        #endregion;
+
+//    }
 
     //网格模块脚本
     public class MeshBlockScript : BlockScript
@@ -95,7 +94,7 @@ namespace XultimateX.MeshBlockMod
 
         //声明碰撞设置功能组件
         //声明碰撞 碰撞 动静摩擦 弹力显示相关组件和相关变量
-        MMenu ColliderMenu;
+        //MMenu ColliderMenu;
         MToggle DisplayColliderToggle;
         MSlider DynamicFrictionSlider;
         MSlider StaticFrictionSlider;
@@ -103,8 +102,8 @@ namespace XultimateX.MeshBlockMod
 
         //声明模型设置功能组件
         //声明网格 贴图 碰撞 碰撞显示 旋转相关组件和相关变量
-        MMenu MeshMenu;
-        MMenu TextureMenu;               
+        //MMenu MeshMenu;
+        //MMenu TextureMenu;               
         MSlider RotationXSlider;
         MSlider RotationYSlider;
         MSlider RotationZSlider;
@@ -134,7 +133,7 @@ namespace XultimateX.MeshBlockMod
         SphereCollider SC;
         ConfigurableJoint CJ;
         Rigidbody RB;
-        NeedResourceFormat NRF = MeshBlockMod.NRF;
+        //NeedResourceFormat NRF = MeshBlockMod.NRF;
         
 
         //标记是否打开过mapper
@@ -181,8 +180,8 @@ namespace XultimateX.MeshBlockMod
             DragSlider.ValueChanged += (float value) => { Drag = value; };
 
             //碰撞设置
-            ColliderMenu = AddMenu("Collider", 0, MeshBlockMod.NRF.MeshNames);
-            ColliderMenu.ValueChanged += ChangedCollider;
+            //ColliderMenu = AddMenu("Collider", 0, MeshBlockMod.NRF.MeshNames);
+            //ColliderMenu.ValueChanged += ChangedCollider;
             DisplayColliderToggle = AddToggle("碰撞可视", "DisplayCollider", false);
             DynamicFrictionSlider = AddSlider("滑动摩擦", "DynamicFriction", 0.5f, 0f, 1f);
             StaticFrictionSlider = AddSlider("静态摩擦", "StaticFriction", 0.5f, 0f, 1f);
@@ -207,10 +206,10 @@ namespace XultimateX.MeshBlockMod
             PositionYSlider.ValueChanged += (float value) => { PositionY = value; ChangedPosition(); };
             PositionZSlider.ValueChanged += (float value) => { PositionZ = value; ChangedPosition(); };
 
-            MeshMenu = AddMenu("Mesh", 0, MeshBlockMod.NRF.MeshNames);
-            MeshMenu.ValueChanged += (int value) => { MF.mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh; };
-            TextureMenu = AddMenu("Texture", 0, MeshBlockMod.NRF.TextureNames);
-            TextureMenu.ValueChanged += (int value) => { MR.material.mainTexture = resources[MeshBlockMod.NRF.TextureFullNames[value]].texture; };
+            //MeshMenu = AddMenu("Mesh", 0, MeshBlockMod.NRF.MeshNames);
+            //MeshMenu.ValueChanged += (int value) => { MF.mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh; };
+            //TextureMenu = AddMenu("Texture", 0, MeshBlockMod.NRF.TextureNames);
+            //TextureMenu.ValueChanged += (int value) => { MR.material.mainTexture = resources[MeshBlockMod.NRF.TextureFullNames[value]].texture; };
 
 
             //渲染设置
@@ -232,7 +231,7 @@ namespace XultimateX.MeshBlockMod
             #region 相关组件赋初值
 
             ChangedHardness();
-            DisplayInMapper();
+            //DisplayInMapper();
             RefreshVisual();
             ChangedCollider();
             ChangedPoint();
@@ -249,20 +248,20 @@ namespace XultimateX.MeshBlockMod
         //组件显示事件
         void DisplayInMapper()
         {
-            //基础组件显示
-            HardnessMenu.DisplayInMapper = MassFormSizeToggle.DisplayInMapper = MassSlider.DisplayInMapper = DragSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.基础设置);
+            ////基础组件显示
+            //HardnessMenu.DisplayInMapper = MassFormSizeToggle.DisplayInMapper = MassSlider.DisplayInMapper = DragSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.基础设置);
 
-            //碰撞组件显示
-            ColliderMenu.DisplayInMapper = DisplayColliderToggle.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.碰撞设置);
-            DynamicFrictionSlider.DisplayInMapper = StaticFrictionSlider.DisplayInMapper = BouncynessSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.碰撞设置);
+            ////碰撞组件显示
+            //ColliderMenu.DisplayInMapper = DisplayColliderToggle.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.碰撞设置);
+            //DynamicFrictionSlider.DisplayInMapper = StaticFrictionSlider.DisplayInMapper = BouncynessSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.碰撞设置);
 
-            //模型组件显示
-            MeshMenu.DisplayInMapper = TextureMenu.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.模型设置);
-            RotationXSlider.DisplayInMapper = RotationYSlider.DisplayInMapper = RotationZSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.模型设置);
-            PositionXSlider.DisplayInMapper = PositionYSlider.DisplayInMapper = PositionZSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.模型设置);
+            ////模型组件显示
+            //MeshMenu.DisplayInMapper = TextureMenu.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.模型设置);
+            //RotationXSlider.DisplayInMapper = RotationYSlider.DisplayInMapper = RotationZSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.模型设置);
+            //PositionXSlider.DisplayInMapper = PositionYSlider.DisplayInMapper = PositionZSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.模型设置);
 
-            //渲染组件显示
-            ShaderMenu.DisplayInMapper = RedSlider.DisplayInMapper = GreenSlider.DisplayInMapper = BlueSlider.DisplayInMapper = AlphaSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.渲染设置);
+            ////渲染组件显示
+            //ShaderMenu.DisplayInMapper = RedSlider.DisplayInMapper = GreenSlider.DisplayInMapper = BlueSlider.DisplayInMapper = AlphaSlider.DisplayInMapper = PageMenu.Value == Convert.ToInt32(PageMenuList.渲染设置);
 
         }
 
@@ -270,19 +269,19 @@ namespace XultimateX.MeshBlockMod
         void ChangedCollider(int value = 0)
         {
 
-            if (MeshBlockMod.NRF.MeshNames[value] =="圆球体")
-            {
-                MC.isTrigger = true;
-                SC.isTrigger = false;
-                MC.GetComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh;
+            //if (MeshBlockMod.NRF.MeshNames[value] =="圆球体")
+            //{
+            //    MC.isTrigger = true;
+            //    SC.isTrigger = false;
+            //    MC.GetComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh;
 
-            }
-            else
-            {
-                MC.isTrigger = false;
-                SC.isTrigger = true;
-                MC.sharedMesh = MC.GetComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh;
-            }
+            //}
+            //else
+            //{
+            //    MC.isTrigger = false;
+            //    SC.isTrigger = true;
+            //    MC.sharedMesh = MC.GetComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[value]].mesh;
+            //}
             
         }
 
@@ -371,14 +370,14 @@ namespace XultimateX.MeshBlockMod
         void RefreshVisual()
         {
             //更新网格和贴图
-            MF.mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
-            MR.material.mainTexture = resources[MeshBlockMod.NRF.TextureFullNames[TextureMenu.Value]].texture;
+            //MF.mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
+            //MR.material.mainTexture = resources[MeshBlockMod.NRF.TextureFullNames[TextureMenu.Value]].texture;
             ChangedShader();ChangedColor();
 
             //添加碰撞箱可视组件
             if (MC.GetComponent<MeshFilter>() == null)
             {
-                MC.gameObject.AddComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
+                //MC.gameObject.AddComponent<MeshFilter>().mesh = resources[MeshBlockMod.NRF.MeshFullNames[MeshMenu.Value]].mesh;
                 MC.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
                 MeshRenderer mr = MC.gameObject.AddComponent<MeshRenderer>();
                 mr.material.shader = Shader.Find("Transparent/Diffuse");
@@ -392,39 +391,15 @@ namespace XultimateX.MeshBlockMod
             
         }
 
-
-        protected virtual System.Collections.IEnumerator UpdateMapper()
-        {
-            if (BlockMapper.CurrentInstance == null)
-                yield break;
-            while (Input.GetMouseButton(0))
-                yield return null;
-            BlockMapper.CurrentInstance.Copy();
-            BlockMapper.CurrentInstance.Paste();
-            yield break;
-        }
-
-        public override void OnSave(XDataHolder stream)
-        {
-            base.OnSave(stream);
-            SaveMapperValues(stream);
-        }
-
-        public override void OnLoad(XDataHolder stream)
-        {
-            base.OnLoad(stream);
-            LoadMapperValues(stream);
-        }
-
-        protected override void BuildingUpdate()
-        {
+        public override void BuildingUpdate()
+        { 
             //改变质量
             ChangedRigibodyPropertise();
             
             //没被选中时就刷新显示
             if (!(GetComponent<BlockVisualController>().Highlighted || GetComponent<BlockVisualController>().Selected ))
             {
-                RefreshVisual();
+                //RefreshVisual();
             }
 
             //碰撞箱在建造模式下总是显示
@@ -435,7 +410,7 @@ namespace XultimateX.MeshBlockMod
 
         }
 
-        protected override void OnSimulateStart()
+        public override void OnSimulateStart()
         {
 
             //模拟模式下碰撞显示生效就显示碰撞箱 否则 自动隐藏
@@ -468,6 +443,6 @@ namespace XultimateX.MeshBlockMod
     }
 
    
-}
+
 
 
