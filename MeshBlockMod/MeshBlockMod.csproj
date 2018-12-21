@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entity\MeshEntityData.cs" />
     <Compile Include="Entity\MeshEntityScript.cs" />
     <Compile Include="NeedResourceFormat.cs" />
     <Compile Include="Block\MeshBlock.cs" />
@@ -70,7 +71,9 @@
   <ItemGroup>
     <Content Include="Resources\Cube.png" />
     <Content Include="XML\MeshBlock.xml" />
-    <Content Include="XML\MeshEntity.xml" />
+    <Content Include="XML\MeshEntity.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="XML\Mod.xml" />
   </ItemGroup>
   <ItemGroup>

@@ -3,8 +3,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using Modding;
 using Modding.Serialization;
+using Modding.Levels;
 
-namespace XultimateX.MeshBlockMod
+namespace MeshMod
 {
 
     // If you need documentation about any of these values or the mod loader
@@ -62,90 +63,60 @@ namespace XultimateX.MeshBlockMod
         {
             Events.OnEntityPlaced += (entity) => 
             {
-                Debug.Log("Place..." + entity.Name);
-                if (entity.Name == "MeshEntity"/*|| entity.Name == "Modded: MeshEntity"*/)
+                if (entity.Name == "MeshEntity")
                 {
-                    // entity.InternalObject.GetEntityData().;
-                    entity.InternalObject.EntityBehaviour.AddSlider("Red", "Red", 0, 0, 255);
-                    entity.InternalObject.gameObject.AddComponent<MeshEntityScript>();
-                   
-
+                    AddScript(entity);               
                 }
             };
 
-            Events.OnLevelSave += (level) =>
+            Events.OnLevelSave += (Level level) =>
             {
                 foreach (var e in level.Entities)
                 {
-                    var sliders = e.InternalObject.EntityBehaviour.Sliders;
-                    float value = 0;
-                    foreach (var s in sliders)
-                    {
-                        if (s.Key == "Red")
-                        {
-                            value = s.Value;
-                            break;
-                        }
-                    }
-
-                    e.InternalObject.GetEntityData().Write("Red", value);
-
-                    ///level.CustomData.Write("color", new tcolor() { color = new Color(1, 1, 1, 1), ID = e.Id }.AttributesUsed);
+                    if (e.Name.Contains("MeshEntity"))
+                    {                  
+                        MeshEntityData meshEntityData = e.InternalObject.GetComponent<MeshEntityScript>().meshEntityData;
+                        level.CustomData.Write("MeshEntityData|" + level.Entities.IndexOf(e), meshEntityData.ToString());
+                    }                  
                 }
-
             };
 
             Events.OnLevelLoaded += (level) =>
             {
+                var data = level.CustomData.ReadAll();
+                List<MeshEntityData> meshEntityDatas = new List<MeshEntityData>();
+
+                foreach (var da in data)
+                {
+                    if (da.Key.Contains("MeshEntity"))
+                    {
+                        MeshEntityData meshEntityData = new MeshEntityData(da.RawValue.ToString());
+                        meshEntityDatas.Add(meshEntityData);
+                    }
+                }
+
                 foreach (var e in level.Entities)
                 {
-                    Debug.Log("load..." + e.Name);
-
-                    if (e.Name == "Modded: MeshEntity")
+                    if (e.Name.Contains("MeshEntity"))
                     {
-                        //float value = e.InternalObject.GetEntityData().ReadFloat("bmt-Red");
-
-                        var data = e.InternalObject.GetEntityData();
-                        //////Debug.Log("??.." + (float)e.InternalObject.blockBehaviour.GetLoadData("bmt-Red").RawValue);
-                        
-                        if (data.HasKey("bmt-Red"))
-                        {
-                           
-                        }
-
-                        foreach (var da in data.ReadAll())
-                        {
-                            
-                            Debug.Log(da.Key);
-                        }
-                        //foreach (var k in e.InternalObject.EntityBehaviour.variables)
-                        //{
-                        //    Debug.Log(k.Key + " " + k.Value);
-                        //}
-
-                        //var sliders = e.InternalObject.EntityBehaviour.Sliders;
-                        MSlider mSlider = e.InternalObject.EntityBehaviour.AddSlider("Red", "Red", 0, 0, 255);
-                        //foreach (var s in sliders)
-                        //{
-                        //    if (s.Key == "Red")
-                        //    {
-                        //        mSlider = s;
-                        //        break;
-                        //    }
-                        //}
-
-                        //mSlider.Value = e.InternalObject.GetEntityData().ReadInt("Red");
+                        MeshEntityData meshEntityData = meshEntityDatas.Find(match => match.ID == e.Id);
+                        AddScript(e, meshEntityData);
                     }
                 }
             };
+
+            void AddScript(Entity entity,MeshEntityData meshEntityData = null)
+            {
+                MeshEntityScript meshEntityScript = entity.InternalObject.gameObject.AddComponent<MeshEntityScript>();
+                meshEntityScript.entity = entity;
+                meshEntityScript.meshEntityData = meshEntityData;
+            }
         }
 
-        
-        public class tcolor:Element,IValidatable
-        {
-            public long ID { get; set; }
-            public Color color { get; set; }
-        }
+
+       
     }
+
+   
 
 }

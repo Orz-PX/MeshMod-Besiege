@@ -31,13 +31,13 @@
 	<Mesh name="Mesh"> <!-- Must be defined as a resource in the manifest. -->
 		<Position x="0.0" y="0.0" z="0.0" />
 		<Rotation x="0.0" y="0.0" z="0.0" />
-		<Scale x="1.0" y="1.0" z="1.0" />
+		<Scale x="0.3" y="0.3" z="0.3" />
 	</Mesh>
 	
 	<Texture name="Texture" /> <!-- Must be defined as a resource in the manifest. -->
 	
 	<Icon name="Icon" /> <!-- Must be defined as a resource in the manifest. -->	
-	<Offset x="0.0" y="1.0" z="0.0" /> 
+	<Offset x="0.0" y="0.0" z="0.0" /> 
 	
 	<Category>Primitives</Category>
 	
