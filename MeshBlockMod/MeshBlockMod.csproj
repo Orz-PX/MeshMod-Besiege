@@ -66,6 +66,7 @@
     <Compile Include="Block\MeshBlock.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourcesFormater.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
