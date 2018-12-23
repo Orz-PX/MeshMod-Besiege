@@ -1,0 +1,109 @@
+#File written by LIBUNFOLD3D. Compilation :Jun 29 2015,14:16:05
+mtllib lifangti.mtl
+#begin vertices
+v 1.6875 -1.6875 1.6875
+v 1.6875 -1.6875 1.6875
+v 1.6875 -1.6875 1.6875
+v -1.6875 -1.6875 1.6875
+v -1.6875 -1.6875 1.6875
+v -1.6875 -1.6875 1.6875
+v -1.6875 1.6875 1.6875
+v -1.6875 1.6875 1.6875
+v -1.6875 1.6875 1.6875
+v 1.6875 1.6875 1.6875
+v 1.6875 1.6875 1.6875
+v 1.6875 1.6875 1.6875
+v 1.6875 -1.6875 -1.6875
+v 1.6875 -1.6875 -1.6875
+v 1.6875 -1.6875 -1.6875
+v -1.6875 -1.6875 -1.6875
+v -1.6875 -1.6875 -1.6875
+v -1.6875 -1.6875 -1.6875
+v 1.6875 1.6875 -1.6875
+v 1.6875 1.6875 -1.6875
+v 1.6875 1.6875 -1.6875
+v -1.6875 1.6875 -1.6875
+v -1.6875 1.6875 -1.6875
+v -1.6875 1.6875 -1.6875
+#end vertices
+
+#begin 24 textures vertices 
+vt 0.4578133 0.0171867 0
+vt 0.5421876 0.3328137 0
+vt 0.1421867 0.3421863 0
+vt 0.1421867 0.0171867 0
+vt 0.5421867 0.0171863 0
+vt 0.8578133 0.3421871 0
+vt 0.1421867 0.3328133 0
+vt 0.4578135 0.6671868 0
+vt 0.8578133 0.6578137 0
+vt 0.4578133 0.3328133 0
+vt 0.1421867 0.6578129 0
+vt 0.4578134 0.9828132 0
+vt 0.8578141 0.3328129 0
+vt 0.4578133 0.3421863 0
+vt 0.5421867 0.6671867 0
+vt 0.8578133 0.01718711 0
+vt 0.5421867 0.3421871 0
+vt 0.8578133 0.6671867 0
+vt 0.4578133 0.6578129 0
+vt 0.1421867 0.9828134 0
+vt 0.5421867 0.9828133 0
+vt 0.142187 0.6671866 0
+vt 0.5421867 0.6578137 0
+vt 0.8578133 0.9828133 0
+#end 24 textures vertices 
+
+#begin 24 normals 
+vn 0 0 1
+vn 0 -1 0
+vn 1 0 0
+vn 0 0 1
+vn 0 -1 0
+vn -1 0 0
+vn 0 0 1
+vn 0 1 0
+vn -1 0 0
+vn 0 0 1
+vn 1 0 0
+vn 0 1 0
+vn 0 -1 0
+vn 1 0 0
+vn 0 0 -1
+vn 0 -1 0
+vn -1 0 0
+vn 0 0 -1
+vn 1 0 0
+vn 0 1 0
+vn 0 0 -1
+vn 0 1 0
+vn -1 0 0
+vn 0 0 -1
+#end 24 normals 
+
+#begin 12 faces
+usemtl MTL0
+g 1
+f 10/10/10 4/4/4 1/1/1 
+f 13/13/13 2/2/2 5/5/5 
+f 19/19/19 11/11/11 3/3/3 
+f 19/19/19 3/3/3 14/14/14 
+f 10/10/10 7/7/7 4/4/4 
+f 17/17/17 6/6/6 9/9/9 
+f 16/16/16 13/13/13 5/5/5 
+f 22/22/22 8/8/8 12/12/12 
+f 23/23/23 17/17/17 9/9/9 
+f 22/22/22 12/12/12 20/20/20 
+f 24/24/24 15/15/15 18/18/18 
+f 24/24/24 21/21/21 15/15/15 
+#end 12 faces
+
+#begin properties
+#U3DPROPERTIES_00 table {Mesh table {EdgesUVW table {Selected ints { 15 4 } } SymPlane table {Point vector3d 0 0 0  Normal vector3d 1 0 0  Threshold double 0.01 Enabled bool false } Maps table {Density table {PrimType string "Polygon" Size int 1 DefaultValue double 1 ScaleType string "Log" MinValue double 0.1 MaxValue double 4 Data doubles { r 12 1 } } Pin table {PrimType string "Vertex" Size int 1 DefaultValue double 0 ScaleType string "Normalized" MinValue double 0 MaxValue double 1 Data doubles { r 24 0 } } Protect table {PrimType string "Vertex" Size int 1 DefaultValue double 0 ScaleType string "Normalized" MinValue double -1 MaxValue double 1 Data doubles { r 24 0 } } } } }
+#end properties
+
+#begin 0 fatal error vertex (that Unfold3D cannot handle)
+#end 0 fatal error vertex (that Unfold3D cannot handle)
+
+#begin 0 error vertex
+#end 0 error vertex

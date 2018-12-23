@@ -1,0 +1,87 @@
+#File written by LIBUNFOLD3D. Compilation :Jun 29 2015,14:16:05
+mtllib sanlenzhu.mtl
+#begin vertices
+v -3.636057 1.6875 -1.6875
+v -3.636057 1.6875 -1.6875
+v -3.636057 1.6875 -1.6875
+v 0 1.6875 4.610336
+v 0 1.6875 4.610336
+v 0 1.6875 4.610336
+v 0 -1.6875 4.610336
+v 0 -1.6875 4.610336
+v 0 -1.6875 4.610336
+v -3.636057 -1.6875 -1.6875
+v -3.636057 -1.6875 -1.6875
+v -3.636057 -1.6875 -1.6875
+v 3.636057 1.6875 -1.6875
+v 3.636057 1.6875 -1.6875
+v 3.636057 1.6875 -1.6875
+v 3.636057 -1.6875 -1.6875
+v 3.636057 -1.6875 -1.6875
+v 3.636057 -1.6875 -1.6875
+#end vertices
+
+#begin 18 textures vertices 
+vt 0.05487436 0.2950327 0
+vt 0.7049675 0.6269078 0
+vt 0.704967 0.595202 0
+vt 0.05487436 0.7049673 0
+vt 0.5000002 0.9819216 0
+vt 0.7548744 0.2950327 0
+vt 0.2451256 0.7049673 0
+vt 0.2950329 0.3725068 0
+vt 0.9451256 0.2950327 0
+vt 0.2451256 0.2950327 0
+vt 0.704967 0.4049507 0
+vt 0.5000002 0.01749315 0
+vt 0.295033 0.6269078 0
+vt 0.2950325 0.595202 0
+vt 0.7548744 0.7049673 0
+vt 0.2950325 0.4049507 0
+vt 0.7049675 0.3725068 0
+vt 0.9451256 0.7049673 0
+#end 18 textures vertices 
+
+#begin 18 normals 
+vn -0.866025 0 0.5
+vn 0 1 0
+vn 0 0 -1
+vn -0.866025 0 0.5
+vn 0 1 0
+vn 0.866025 0 0.5
+vn -0.866025 0 0.5
+vn 0 -1 0
+vn 0.866025 0 0.5
+vn -0.866025 0 0.5
+vn 0 0 -1
+vn 0 -1 0
+vn 0 1 0
+vn 0 0 -1
+vn 0.866025 0 0.5
+vn 0 0 -1
+vn 0 -1 0
+vn 0.866025 0 0.5
+#end 18 normals 
+
+#begin 8 faces
+usemtl MTL0
+g 1
+f 7/7/7 4/4/4 1/1/1 
+f 13/13/13 2/2/2 5/5/5 
+f 10/10/10 7/7/7 1/1/1 
+f 14/14/14 11/11/11 3/3/3 
+f 18/18/18 6/6/6 9/9/9 
+f 18/18/18 15/15/15 6/6/6 
+f 17/17/17 8/8/8 12/12/12 
+f 16/16/16 11/11/11 14/14/14 
+#end 8 faces
+
+#begin properties
+#U3DPROPERTIES_00 table {Mesh table {SymPlane table {Point vector3d 0 0 0  Normal vector3d 1 0 0  Threshold double 0.01 Enabled bool false } Maps table {Density table {PrimType string "Polygon" Size int 1 DefaultValue double 1 ScaleType string "Log" MinValue double 0.1 MaxValue double 4 Data doubles { r 8 1 } } Pin table {PrimType string "Vertex" Size int 1 DefaultValue double 0 ScaleType string "Normalized" MinValue double 0 MaxValue double 1 Data doubles { r 18 0 } } Protect table {PrimType string "Vertex" Size int 1 DefaultValue double 0 ScaleType string "Normalized" MinValue double -1 MaxValue double 1 Data doubles { r 18 0 } } } } }
+#end properties
+
+#begin 0 fatal error vertex (that Unfold3D cannot handle)
+#end 0 fatal error vertex (that Unfold3D cannot handle)
+
+#begin 0 error vertex
+#end 0 error vertex
