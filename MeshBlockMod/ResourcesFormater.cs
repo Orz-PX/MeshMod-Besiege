@@ -20,6 +20,7 @@ public class ResourcesFormater
     public ResourcesFormater()
     {
         ReadMeshs(PrefabPath);
+
     }
 
 
@@ -31,6 +32,8 @@ public class ResourcesFormater
 
         Debug.Log(vs.Length);
         Debug.Log(vs[0]);
+        Console.WriteLine(vs[0]);
+   
 
         
         //ModResource.CreateMeshResource("",)

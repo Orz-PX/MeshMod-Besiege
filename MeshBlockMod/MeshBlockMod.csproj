@@ -71,6 +71,12 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Resources\Cube.png" />
+    <Content Include="Resources\Prefabs\Cube.png" />
+    <Content Include="Resources\Prefabs\三棱柱.png" />
+    <Content Include="Resources\Prefabs\二分之一空心圆柱.png" />
+    <Content Include="Resources\Prefabs\半圆柱体.png" />
+    <Content Include="Resources\Prefabs\圆球体.png" />
+    <Content Include="Resources\Prefabs\直角三棱柱.png" />
     <Content Include="XML\MeshBlock.xml" />
     <Content Include="XML\MeshEntity.xml">
       <SubType>Designer</SubType>
@@ -79,6 +85,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Cube.obj" />
+    <None Include="Resources\Prefabs\Cube.obj" />
+    <None Include="Resources\Prefabs\三棱柱.obj" />
+    <None Include="Resources\Prefabs\二分之一空心圆柱.obj" />
+    <None Include="Resources\Prefabs\半圆柱体.obj" />
+    <None Include="Resources\Prefabs\圆球体.obj" />
+    <None Include="Resources\Prefabs\直角三棱柱.obj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
